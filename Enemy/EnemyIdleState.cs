@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EnemyIdleState : EnemyState
 {
+    private float fieldOfViewAngle = 45f;
+    private bool playerInSight = false;
     public EnemyIdleState(EnemyStateMachine _stateMachine, Enemy _enemy) : base( _stateMachine, _enemy)
     {
         stateMachine = _stateMachine;
@@ -21,9 +23,35 @@ public class EnemyIdleState : EnemyState
 
     public override void LogicUpdate()
     {
-        if (Vector3.Distance(PlayerStateMachine.Instance.transform.position, stateMachine.transform.position) <= 4 && !enemy.isAgro)
+        RaycastHit hit;
+
+        var playerPos = new Vector3(Player.Instance.transform.position.x, Player.Instance.transform.position.y + 0.5f, Player.Instance.transform.position.z);
+        var enemyPos = new Vector3(enemy.transform.position.x, enemy.transform.position.y + 0.5f, enemy.transform.position.z);
+        var direction = (playerPos - enemyPos).normalized;
+        
+        var angleToPlayer = Vector3.Angle(enemy.transform.forward, direction);
+
+        if (angleToPlayer <= fieldOfViewAngle / 2f)
         {
-            stateMachine.ChangeState(stateMachine.enemyAlertState);
+            playerInSight = true;
+        }
+
+        if (Physics.Raycast(enemyPos, direction, out hit, 5f, stateMachine.layerMask))
+        {
+            if (hit.collider.tag == "Player")
+            {
+                Player.Instance.isClickedWhileMoving = true;
+                
+                if (!playerInSight)
+                {
+                    stateMachine.ChangeState(stateMachine.enemyAlertState);
+                }
+                else
+                {
+                    stateMachine.ChangeState(stateMachine.enemyChaseState);
+                }
+                
+            }
         }
     }
 

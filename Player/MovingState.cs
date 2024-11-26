@@ -31,7 +31,7 @@ public class MovingState : State
 
         if (TurnGameManager.Instance.agroEnemies.Count > 0)
         {
-            path = path.GetRange(0, Mathf.Min(2, path.Count));
+            path = path.GetRange(0, Mathf.Min(1, path.Count));
         }
         moveCoroutine = stateMachine.StartCoroutine(MoveAlongPath(path));
     }
@@ -88,7 +88,7 @@ public class MovingState : State
             speed = 1;
         }
         player.animator.SetFloat("speed", speed);
-        speed += Time.deltaTime * 3;
+        speed += Time.deltaTime * 50;
 
         if (!player.isMoving)
         {

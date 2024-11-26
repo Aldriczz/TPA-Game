@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class DungeonGenerator : MonoBehaviour
@@ -21,6 +22,33 @@ public class DungeonGenerator : MonoBehaviour
 
     [SerializeField]
     private GameObject Player;
+    
+    private string[] EnemyNames =
+    {
+        "AC",
+        "AS",
+        "BD",
+        "BT",
+        "CT",
+        "FO",
+        "GN",
+        "GY",
+        "HO",
+        "KH",
+        "MM",
+        "MR",
+        "MV",
+        "NS",
+        "OV",
+        "PL",
+        "RU",
+        "TI",
+        "VD",
+        "VM",
+        "WS",
+        "WW",
+        "YD"
+    };
     void Awake()
     {
         if (Instance == null)
@@ -341,9 +369,11 @@ public class DungeonGenerator : MonoBehaviour
             {
                 float angle = Random.Range(0, 360);
                 Quaternion objectRotation = Quaternion.Euler(0, angle, 0);
-                GameObject enemy = Instantiate(Resources.Load<GameObject>("Enemy"), new Vector3(x, 0.75f, y), objectRotation);
+                GameObject enemy = Instantiate(Resources.Load<GameObject>("Entity/Enemy"), new Vector3(x, 0.75f, y), objectRotation);
                 enemyList.Add(enemy.GetComponent<EnemyStateMachine>());
+                enemy.GetComponentInChildren<Text>().text = EnemyNames[Random.Range(0, 23)];
                 map[x, y] = '#';
+                enemy.transform.tag = "Enemy";
                 numberOfEnemies--;
             }
         }

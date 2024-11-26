@@ -6,7 +6,7 @@ using UnityEngine;
 public class TurnGameManager : MonoBehaviour
 {
     public static TurnGameManager Instance { get; private set; }
-    public enum GameState {PlayerTurn, EnemyTurn} 
+    public enum GameState { PlayerTurn, EnemyTurn } 
     private GameState currentGameState = GameState.PlayerTurn;
     [SerializeField] private TurnChangeEventChannel turnChangeEventChannel;
     [SerializeField] public List<EnemyStateMachine> agroEnemies;
@@ -23,15 +23,13 @@ public class TurnGameManager : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         agroEnemies = new List<EnemyStateMachine>();
         turnChangeEventChannel.RaiseEvent(currentGameState);
     }
-    
-    // Update is called once per frame
-    void Update()
+
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -42,34 +40,37 @@ public class TurnGameManager : MonoBehaviour
     public void SwitchGameState()
     {
         currentGameState = currentGameState == GameState.PlayerTurn ? GameState.EnemyTurn : GameState.PlayerTurn;
-    
+        Debug.Log(currentGameState);
         if (currentGameState == GameState.PlayerTurn)
         {
-            // Debug.Log("Player Turn");
-            PlayerStateMachine.Instance.player.EnableInput();
-            turnChangeEventChannel.RaiseEvent(currentGameState);
+            Player.Instance.EnableInput();
+            // turnChangeEventChannel.RaiseEvent(currentGameState);
         }
         else
         {
-            // Debug.Log("Enemy Turn");
-            PlayerStateMachine.Instance.player.DisableInput();
+            Player.Instance.DisableInput();
+            turnChangeEventChannel.RaiseEvent(currentGameState);
             StartCoroutine(HandleEnemyTurn());
         }
     }
 
     private IEnumerator HandleEnemyTurn()
     {
-        var enemiesToProcess = new List<EnemyStateMachine>(agroEnemies); 
-        foreach (var enemy in enemiesToProcess)
-        {
-            enemy.ChangeState(enemy.enemyChaseState);
+        List<EnemyStateMachine> AgroEnemies = new List<EnemyStateMachine>(agroEnemies);
+        Debug.Log(AgroEnemies.Count);
 
-            while (enemy.isMoving)
+        for(var i = 0; i < AgroEnemies.Count; i++){
+            if (!AgroEnemies[i].isRealized)
             {
+                AgroEnemies[i].isRealized = true;
                 yield return null;
             }
+            AgroEnemies[i].canDoAction = true;
+            
+            yield return new WaitUntil(() => AgroEnemies[i].canDoAction == false || AgroEnemies[i].GetComponent<Enemy>().isAlive == false);
         }
-        SwitchGameState();
-    }
 
+        SwitchGameState(); // End the enemy turn and switch back to the player
+    }
 }
+

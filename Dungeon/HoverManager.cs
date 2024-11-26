@@ -30,30 +30,31 @@ public class HoverManager : MonoBehaviour
 
     public void OnTileHovered(TileObject hoveredTile)
     {
+        if (highlightedPath.Contains(hoveredTile)) return;
         ResetHighlights();
-        if (PlayerStateMachine.Instance.currentState == PlayerStateMachine.Instance.idleState)
-        {
-            Vector3 playerPos = PlayerStateMachine.Instance.transform.position;
-            Tile start = new Tile((int)playerPos.x, (int)playerPos.z);
-            Tile end = new Tile((int)hoveredTile.transform.position.x, (int)hoveredTile.transform.position.z);
 
-            path = astar.Trace(start, end, DungeonGenerator.Instance.map);
-
-            if (path != null && path.Count < 15)
-            {
-                foreach (Tile tile in path)
-                {
-                    GameObject tileObj = tileGameObjects[tile.x, tile.y];
-                    TileObject tileComponent = tileObj.GetComponent<TileObject>();
-                    tileComponent.Highlight();
-                    highlightedPath.Add(tileComponent);
-                }
-            }
-        }
-        else
+        if (PlayerStateMachine.Instance.currentState == PlayerStateMachine.Instance.movingState)
         {
             hoveredTile.Highlight();
             highlightedPath.Add(hoveredTile);
+            return;
+        }
+
+        Vector3 playerPos = PlayerStateMachine.Instance.transform.position;
+        Tile start = new Tile((int)playerPos.x, (int)playerPos.z);
+        Tile end = new Tile((int)hoveredTile.transform.position.x, (int)hoveredTile.transform.position.z);
+
+        path = astar.Trace(start, end, DungeonGenerator.Instance.map);
+        
+        if (path != null && path.Count < 15)
+        {
+            foreach (Tile tile in path)
+            {
+                GameObject tileObj = tileGameObjects[tile.x, tile.y];
+                TileObject tileComponent = tileObj.GetComponent<TileObject>();
+                tileComponent.Highlight();
+                highlightedPath.Add(tileComponent);
+            }
         }
     }
 

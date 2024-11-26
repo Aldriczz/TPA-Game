@@ -11,7 +11,7 @@ public class TileObject : MonoBehaviour
         originalColor = tileRenderer.material.color;
     }
 
-    void OnMouseEnter()
+    void OnMouseOver()
     {
         HoverManager.Instance.OnTileHovered(this);
     }

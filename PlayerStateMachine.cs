@@ -13,9 +13,9 @@ public class PlayerStateMachine : MonoBehaviour
     [HideInInspector] public IdleState idleState;
     [HideInInspector] public MovingState movingState;
      public TurnChangeEventChannel turnChangeEventChannel;
-    
-    public Player player;
 
+     private Player player;
+     
     private void Awake()
     {
         if (Instance == null || Instance != this)
@@ -26,13 +26,12 @@ public class PlayerStateMachine : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        player = new Player();
-        player.animator = GetComponent<Animator>();
     }
     
 
     private void Start()
     {
+        player = GetComponent<Player>();
         idleState = new IdleState(this, player, camera);
         movingState = new MovingState(this, player, camera);
         ChangeState(idleState);
@@ -56,7 +55,7 @@ public class PlayerStateMachine : MonoBehaviour
     {
         currentState?.Exit();
         currentState = newState;
-        currentState.Enter();
+        currentState?.Enter();
     }
     
     private void OnEnable()
