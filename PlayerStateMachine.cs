@@ -57,29 +57,6 @@ public class PlayerStateMachine : MonoBehaviour
         currentState = newState;
         currentState?.Enter();
     }
-    
-    private void OnEnable()
-    {
-        turnChangeEventChannel.OnTurnChanged += OnTurnChanged;
-    }
-
-    private void OnDisable()
-    {
-        turnChangeEventChannel.OnTurnChanged -= OnTurnChanged;
-    }
-
-    private void OnTurnChanged(TurnGameManager.GameState gameState)
-    {
-        if (gameState == TurnGameManager.GameState.PlayerTurn)
-        {
-            player.EnableInput();
-        }
-        else
-        {
-            player.DisableInput();
-        }
-    }
-
     private void DrawPathDebug()
     {
         if (player.resultMap != null && player.resultMap.Count > 1)

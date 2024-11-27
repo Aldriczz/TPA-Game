@@ -68,10 +68,10 @@ public class EnemyStateMachine : MonoBehaviour
             // Gizmos.DrawRay(enemy.transform.position, leftBoundary);
             // Gizmos.DrawRay(enemy.transform.position, rightBoundary);
             
-    var playerpos = new Vector3(Player.Instance.transform.position.x, Player.Instance.transform.position.y + 0.5f, Player.Instance.transform.position.z);
-    var enemypos = new Vector3(enemy.transform.position.x, enemy.transform.position.y + 0.5f, enemy.transform.position.z);
-    Vector3 direction = (playerpos - enemypos).normalized;
-    Debug.DrawRay(enemypos, direction * 2f, Color.red);
+    // var playerpos = new Vector3(Player.Instance.transform.position.x, Player.Instance.transform.position.y + 0.5f, Player.Instance.transform.position.z);
+    // var enemypos = new Vector3(enemy.transform.position.x, enemy.transform.position.y + 0.5f, enemy.transform.position.z);
+    // Vector3 direction = (playerpos - enemypos).normalized;
+    // Debug.DrawRay(enemypos, direction * 2f, Color.red);
     }
 
 }

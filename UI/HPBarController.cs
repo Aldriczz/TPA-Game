@@ -34,7 +34,6 @@ public class HPBarController : MonoBehaviour
     private void UpdateUI(int CurrentHp)
     {
         HPBar.value = CurrentHp;
-        
     }
 
     private void Update()

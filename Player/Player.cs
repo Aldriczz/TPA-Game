@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     private float clipDuration;
     private float clipSpeed;
 
-    public int damage;
+    public PlayerStatsSO stats;
 
     public GameObject Sword;
 
@@ -46,11 +46,11 @@ public class Player : MonoBehaviour
     {
         ClickableLayerMask = LayerMask.GetMask("Enemy", "Ground");
         animator = GetComponent<Animator>();
-        damage = 100;
     }
 
     private void Update()
     {
+        
     }
 
     private void AssignInput()
@@ -101,6 +101,7 @@ public class Player : MonoBehaviour
 
     private IEnumerator Attack(RaycastHit hit)
     {
+        var randomCritNumber = Random.Range(0, 100);
         var target = (hit.transform.position - transform.position).normalized;
         transform.forward = target;
         
@@ -109,7 +110,15 @@ public class Player : MonoBehaviour
         
         clipDuration = animator.GetCurrentAnimatorStateInfo(0).length;
         clipSpeed = animator.GetCurrentAnimatorStateInfo(0).speed;
-        hit.transform.GetComponent<Enemy>().Gethit(damage);
+
+        if (randomCritNumber < stats.CritChance)
+        {
+            hit.transform.GetComponent<Enemy>().Gethit(stats.Damage * stats.CritDamage / 100, Color.red);
+        }
+        else
+        {
+            hit.transform.GetComponent<Enemy>().Gethit(stats.Damage, Color.white);
+        }
 
         yield return new WaitForSeconds(clipDuration / clipSpeed);
 
@@ -124,6 +133,11 @@ public class Player : MonoBehaviour
     private void HideWeapon()
     {
         Sword.SetActive(false);
+    }
+
+    private void Died()
+    {
+        DisableInput();
     }
     
 }

@@ -3,35 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Enemy : MonoBehaviour
 {
     [HideInInspector] public Animator animator;
+    [HideInInspector] public EnemyBaseStat Stat { get; set; }
     [HideInInspector] public bool isAlive = true;
     
     [SerializeField] public bool isAgro;
-    [SerializeField] public int MaxHealth;
-    [SerializeField] public int damage;
-    [SerializeField] public int CurrentHealth;
     [SerializeField] public float moveSpeed;
 
     [SerializeField] private Slider HPBar;
     [SerializeField] private Slider EaseHPBar;
-    [SerializeField] private GameObject Ragdoll;
+
+    private DamageText _damageText;
+    
 
     private float timePassed = 0f;
     private void Start()
     {
         animator = GetComponent<Animator>();
+        _damageText = transform.Find("Canvas/Bar/Damage Text").GetComponent<DamageText>();
         moveSpeed = 3f;
-        MaxHealth = 100;
-        CurrentHealth = MaxHealth;
         isAgro = false;
-        damage = 5;
-        HPBar.maxValue = MaxHealth;
-        HPBar.value = CurrentHealth;
-        EaseHPBar.maxValue = MaxHealth;
-        EaseHPBar.value = CurrentHealth;
+        HPBar.maxValue = Stat.MaxHealth;
+        HPBar.value = Stat.CurrentHealth;
+        EaseHPBar.maxValue = Stat.MaxHealth;
+        EaseHPBar.value = Stat.CurrentHealth;
     }
 
     private void Update()
@@ -40,7 +39,7 @@ public class Enemy : MonoBehaviour
         
         if (HPBar.value != EaseHPBar.value)
         {
-            EaseHPBar.value = Mathf.Lerp(EaseHPBar.value, CurrentHealth,  2f * Time.deltaTime);
+            EaseHPBar.value = Mathf.Lerp(EaseHPBar.value, Stat.CurrentHealth,  2f * Time.deltaTime);
         }
         
         
@@ -48,7 +47,15 @@ public class Enemy : MonoBehaviour
     
     private void StartAttack()
     {
-        Player.Instance.GetComponent<Damageable>().TakeDamage(damage);
+        var randomCritChance = Random.Range(0, 100);
+        if (randomCritChance < Stat.CritChance)
+        {
+            Player.Instance.GetComponent<Damageable>().TakeDamage(Stat.Damage * Stat.CritDamage / 100, Color.red);
+        }
+        else
+        {
+            Player.Instance.GetComponent<Damageable>().TakeDamage(Stat.Damage, Color.white);
+        }
     }
 
     private void StopAttack()
@@ -57,14 +64,16 @@ public class Enemy : MonoBehaviour
         GetComponent<EnemyStateMachine>().isAttacking = false;
     }
 
-    public void Gethit(int damage)
+    public void Gethit(int damage, Color color)
     {
-        CurrentHealth -= Player.Instance.damage;
-        HPBar.value = CurrentHealth;
+        _damageText.Activate(damage, color);
+        
+        Stat.CurrentHealth -= damage;
+        HPBar.value = Stat.CurrentHealth;
         transform.forward = (Player.Instance.transform.position - transform.position).normalized; 
         animator.SetTrigger("gethit");
 
-        if (CurrentHealth <= 0)
+        if (Stat.CurrentHealth <= 0)
         {
             isAlive = false;
             animator.SetTrigger("die");

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class HoverManager : MonoBehaviour
     private AStar astar;
     [HideInInspector] public List<TileObject> highlightedPath;
     private GameObject[,] tileGameObjects;
+    private int layerMask;
     
     
     [HideInInspector] public List<Tile> path;
@@ -26,6 +28,19 @@ public class HoverManager : MonoBehaviour
         highlightedPath = new List<TileObject>();
         tileGameObjects = DungeonGenerator.Instance.tileGameObjectsMap;
         path = new List<Tile>();
+        layerMask = LayerMask.GetMask("Ground", "Enemy");
+    }
+
+    private void Update()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100, layerMask))
+        {
+            if (hit.collider.gameObject.tag == "Tile")
+            {
+                OnTileHovered(hit.collider.gameObject.GetComponent<TileObject>());
+            }
+        }
     }
 
     public void OnTileHovered(TileObject hoveredTile)
@@ -39,6 +54,7 @@ public class HoverManager : MonoBehaviour
             highlightedPath.Add(hoveredTile);
             return;
         }
+        Debug.Log("ASTAARRRRRRRRR");
 
         Vector3 playerPos = PlayerStateMachine.Instance.transform.position;
         Tile start = new Tile((int)playerPos.x, (int)playerPos.z);

@@ -8,7 +8,8 @@ using Random = UnityEngine.Random;
 public class DungeonGenerator : MonoBehaviour
 {
     public static DungeonGenerator Instance;
-    
+
+    [HideInInspector] public int curLvl = 1;
     [HideInInspector] public char[,] map;
     [HideInInspector] public Tile[,] tileMap;
     [HideInInspector] public GameObject[,] tileGameObjectsMap;
@@ -356,10 +357,10 @@ public class DungeonGenerator : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        int numberOfEnemies = 3;
-        Debug.Log(numberOfEnemies);
+        int numberOfEnemies = 5;
         int x = Random.Range(1, lengthMap - 1);
         int y = Random.Range(1, widthMap - 1);
+        int rarity = Random.Range(0, 100);
 
         while (numberOfEnemies > 0)
         {
@@ -367,9 +368,27 @@ public class DungeonGenerator : MonoBehaviour
             y = Random.Range(1, widthMap - 1);
             if (map[x, y] == ' ')
             {
+                GameObject enemy;
                 float angle = Random.Range(0, 360);
                 Quaternion objectRotation = Quaternion.Euler(0, angle, 0);
-                GameObject enemy = Instantiate(Resources.Load<GameObject>("Entity/Enemy"), new Vector3(x, 0.75f, y), objectRotation);
+                
+                if (rarity < curLvl / 2)
+                {
+                    enemy = Instantiate(Resources.Load<GameObject>("Entity/EliteEnemy"), new Vector3(x, 0.75f, y), objectRotation);
+                    enemy.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Elite", curLvl);
+                }
+                else if (rarity < curLvl + 5 / 2)
+                {
+                    enemy = Instantiate(Resources.Load<GameObject>("Entity/MediumEnemy"), new Vector3(x, 0.75f, y), objectRotation);
+                    enemy.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Medium", curLvl);
+                }
+                else
+                {
+                    enemy = Instantiate(Resources.Load<GameObject>("Entity/CommonEnemy"), new Vector3(x, 0.75f, y), objectRotation);
+                    enemy.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Common", curLvl);
+                    Debug.Log(enemy.GetComponent<Enemy>().Stat.MaxHealth);
+                }
+                
                 enemyList.Add(enemy.GetComponent<EnemyStateMachine>());
                 enemy.GetComponentInChildren<Text>().text = EnemyNames[Random.Range(0, 23)];
                 map[x, y] = '#';

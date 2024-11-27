@@ -11,15 +11,15 @@ public class TileObject : MonoBehaviour
         originalColor = tileRenderer.material.color;
     }
 
-    void OnMouseOver()
-    {
-        HoverManager.Instance.OnTileHovered(this);
-    }
-
-    void OnMouseExit()
-    {
-        HoverManager.Instance.OnTileUnhovered(this);
-    }
+    // void OnMouseOver()
+    // {
+    //     HoverManager.Instance.OnTileHovered(this);
+    // }
+    //
+    // void OnMouseExit()
+    // {
+    //     HoverManager.Instance.OnTileUnhovered(this);
+    // }
 
     public void Highlight()
     {
