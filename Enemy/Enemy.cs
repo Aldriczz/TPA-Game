@@ -84,6 +84,7 @@ public class Enemy : MonoBehaviour
     {
         DungeonGenerator.Instance.map[(int)transform.position.x, (int)transform.position.z] = ' ';
         TurnGameManager.Instance.agroEnemies.Remove(GetComponent<EnemyStateMachine>());
+        ExpManager.Instance.AddExp(Stat.ExpDrop);
         gameObject.SetActive(false);
     }
 }

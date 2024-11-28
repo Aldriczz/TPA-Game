@@ -75,7 +75,6 @@ public class EnemyChaseState : EnemyState
 
         if (lastPlayerPosition == null || lastPlayerPosition.x != end.x || lastPlayerPosition.y != end.y)
         {
-            Debug.Log($"Recalculating path: Start ({start.x}, {start.y}), End ({end.x}, {end.y})");
             path = stateMachine.astar.Trace(start, end, DungeonGenerator.Instance.map);
 
             path = path.GetRange(0, Mathf.Min(1, path.Count));

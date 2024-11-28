@@ -54,7 +54,6 @@ public class HoverManager : MonoBehaviour
             highlightedPath.Add(hoveredTile);
             return;
         }
-        Debug.Log("ASTAARRRRRRRRR");
 
         Vector3 playerPos = PlayerStateMachine.Instance.transform.position;
         Tile start = new Tile((int)playerPos.x, (int)playerPos.z);

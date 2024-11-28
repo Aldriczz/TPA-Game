@@ -49,7 +49,6 @@ public class EnemyStateMachine : MonoBehaviour
     
     public void ChangeState(EnemyState newState)
     {
-        Debug.Log("ChangeState: " + newState.ToString());
         currentState?.Exit();
         currentState = newState;
         currentState?.Enter();

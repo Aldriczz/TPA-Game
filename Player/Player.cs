@@ -26,7 +26,6 @@ public class Player : MonoBehaviour
 
     public GameObject Sword;
 
-
     private void Awake()
     {
         if (Instance == null)
@@ -56,6 +55,7 @@ public class Player : MonoBehaviour
     private void AssignInput()
     {
         inputControl.Player.Move.performed += ctx => OnClickMove();
+        inputControl.Player.Skill1.performed += ctx => SkillSystem.Instance.ActivateSkill1();
         EnableInput();
     }
     
@@ -110,6 +110,9 @@ public class Player : MonoBehaviour
         
         clipDuration = animator.GetCurrentAnimatorStateInfo(0).length;
         clipSpeed = animator.GetCurrentAnimatorStateInfo(0).speed;
+        
+        GetComponent<PlayerStateMachine>().SkillReduceCooldownEventChannel.RaiseIntEvent(0);
+        GetComponent<PlayerStateMachine>().SkillUseEventChannel.RaiseGameObjectEvent(hit.transform.gameObject);
 
         if (randomCritNumber < stats.CritChance)
         {
@@ -119,7 +122,7 @@ public class Player : MonoBehaviour
         {
             hit.transform.GetComponent<Enemy>().Gethit(stats.Damage, Color.white);
         }
-
+        
         yield return new WaitForSeconds(clipDuration / clipSpeed);
 
         TurnGameManager.Instance.SwitchGameState();

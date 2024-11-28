@@ -357,7 +357,7 @@ public class DungeonGenerator : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        int numberOfEnemies = 5;
+        int numberOfEnemies = 20;
         int x = Random.Range(1, lengthMap - 1);
         int y = Random.Range(1, widthMap - 1);
         int rarity = Random.Range(0, 100);
@@ -386,7 +386,6 @@ public class DungeonGenerator : MonoBehaviour
                 {
                     enemy = Instantiate(Resources.Load<GameObject>("Entity/CommonEnemy"), new Vector3(x, 0.75f, y), objectRotation);
                     enemy.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Common", curLvl);
-                    Debug.Log(enemy.GetComponent<Enemy>().Stat.MaxHealth);
                 }
                 
                 enemyList.Add(enemy.GetComponent<EnemyStateMachine>());

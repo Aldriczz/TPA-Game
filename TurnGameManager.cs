@@ -40,7 +40,6 @@ public class TurnGameManager : MonoBehaviour
     public void SwitchGameState()
     {
         currentGameState = currentGameState == GameState.PlayerTurn ? GameState.EnemyTurn : GameState.PlayerTurn;
-        Debug.Log(currentGameState);
         if (currentGameState == GameState.PlayerTurn)
         {
             Player.Instance.EnableInput();
@@ -57,7 +56,6 @@ public class TurnGameManager : MonoBehaviour
     private IEnumerator HandleEnemyTurn()
     {
         List<EnemyStateMachine> AgroEnemies = new List<EnemyStateMachine>(agroEnemies);
-        Debug.Log(AgroEnemies.Count);
 
         for(var i = 0; i < AgroEnemies.Count; i++){
             if (!AgroEnemies[i].isRealized)
