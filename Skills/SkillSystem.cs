@@ -8,19 +8,45 @@ public class SkillSystem : MonoBehaviour
     
     public static SkillSystem Instance { get; private set; }
 
+    [Header("Player Data")]
     public PlayerStatsSO PlayerStats;
     public PlayerSkillsSO PlayerSkills;
+    [HideInInspector] private List<Skill> AvailableSkills = new List<Skill>();
+    
+    [Header("Skill Cooldown")]
+    public List<Image> SkillCooldownList = new List<Image>();
+    public List<GameObject> CurrentCooldownTextList = new List<GameObject>();
      
-    public GameObject SkillEffect1;
+    [Header("Skill Effect")]
+    public List<GameObject> SkillEffectList = new List<GameObject>();
     
     [Header("Toggle Skill Image")]
-    public Image Skill1ToggleImage;
+    public List<Image> SkillToggleImageList = new List<Image>();
     
-    [HideInInspector] public List<Skill> Skills;
+    [Header("Buff Duration Skill")]
+    public List<GameObject> SkillDurationTextList = new List<GameObject>();
+    public List<GameObject> SkillDurationGameObjectList = new List<GameObject>();
+    
+    [Header("Event Channel")]
+    public VoidEventChannel SkillCooldownEventChannel;
 
+    private enum AllSkillIndex
+    {
+        ARCANE_STRIKE,
+        RAGE,
+    }
+    private enum ActiveSkillIndex
+    {
+        ARCANE_STRIKE,
+        
+    }
+
+    private enum PassiveSkillIndex
+    {
+        RAGE,
+    }
     
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {   
         if (Instance == null)
         {
@@ -31,43 +57,59 @@ public class SkillSystem : MonoBehaviour
             Destroy(this);
         }
         
-        Skills = new List<Skill>();
-        Skills.Add(new ArcaneStrike());
-    }
+        AvailableSkills.Add(new ArcaneStrike(SkillCooldownList[(int)AllSkillIndex.ARCANE_STRIKE], CurrentCooldownTextList[(int)AllSkillIndex.ARCANE_STRIKE], SkillEffectList[(int)AllSkillIndex.ARCANE_STRIKE]));
+        AvailableSkills.Add(new Rage(SkillCooldownList[(int)AllSkillIndex.RAGE], CurrentCooldownTextList[(int)AllSkillIndex.RAGE], SkillEffectList[(int)AllSkillIndex.RAGE], SkillDurationGameObjectList[(int)PassiveSkillIndex.RAGE], SkillDurationTextList[(int)PassiveSkillIndex.RAGE]));
+     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        for (var i = 0; i < Skills.Count; i++)
+        for (var i = 0; i < AvailableSkills.Count; i++)
         {
-            if (PlayerStats.Level >= Skills[i].GetLevelRequired())
+            if (PlayerStats.Level >= AvailableSkills[i].GetLevelRequired())
             {
-                PlayerSkills.PlayerSkillsList.Add(Skills[i]);
-                Skills.RemoveAt(i);
+                PlayerSkills.PlayerSkillsList.Add(AvailableSkills[i]);
+                AvailableSkills.RemoveAt(i);
             }
         }
     }
 
     public void ActivateSkill1()
     {
-        if (PlayerSkills.PlayerSkillsList.Count == 0 || PlayerSkills.PlayerSkillsList[0].GetCanBeUsed() == false)
-        {
-            return;
-        }
+        if (PlayerSkills.PlayerSkillsList.Count == 0) return;
+        if (PlayerSkills.PlayerSkillsList.Count - 1 <= (int)AllSkillIndex.ARCANE_STRIKE) return;
+        if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.ARCANE_STRIKE].GetCanBeUsed() == false) return;
 
-        if (PlayerSkills.PlayerSkillsList[0] is ActiveSkill activeSkill)
+        if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.ARCANE_STRIKE] is ActiveSkill activeSkill)
         {
             if (!activeSkill.isToggle)
             {
-                SkillEffect1.SetActive(true);
-                Skill1ToggleImage.gameObject.SetActive(true);
+                SkillEffectList[(int)AllSkillIndex.ARCANE_STRIKE].SetActive(true);
+                SkillToggleImageList[(int)ActiveSkillIndex.ARCANE_STRIKE].gameObject.SetActive(true);
                 activeSkill.isToggle = true;
             }
             else
             {
-                SkillEffect1.SetActive(false);
-                Skill1ToggleImage.gameObject.SetActive(false);
+                SkillEffectList[(int)AllSkillIndex.ARCANE_STRIKE].SetActive(false);
+                SkillToggleImageList[(int)ActiveSkillIndex.ARCANE_STRIKE].gameObject.SetActive(false);
                 activeSkill.isToggle = false;
+            }
+        }
+    }
+    
+    public void ActivateSkill2()
+    {
+        if (PlayerSkills.PlayerSkillsList.Count == 0) return;
+        if (PlayerSkills.PlayerSkillsList.Count - 1 < (int)AllSkillIndex.RAGE) return;
+        if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.RAGE].GetCanBeUsed() == false) return;
+        
+        if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.RAGE] is PassiveSkill passiveSkill)
+        {
+            if (passiveSkill.GetCanBeUsed())
+            {
+                Player.Instance.animator.SetTrigger("buff");
+                passiveSkill.SetCanBeUsed(false);
+                passiveSkill.ActivateSkill();
+                SkillSlotController.Instance.UpdateCooldownUI();
             }
         }
     }

@@ -72,14 +72,10 @@ public class EnemyChaseState : EnemyState
     {
         var start = new Tile((int)stateMachine.transform.position.x, (int)stateMachine.transform.position.z);
         var end = new Tile((int)playerPosition.x, (int)playerPosition.z);
+        
+        path = stateMachine.astar.Trace(start, end, DungeonGenerator.Instance.map);
 
-        if (lastPlayerPosition == null || lastPlayerPosition.x != end.x || lastPlayerPosition.y != end.y)
-        {
-            path = stateMachine.astar.Trace(start, end, DungeonGenerator.Instance.map);
-
-            path = path.GetRange(0, Mathf.Min(1, path.Count));
-            lastPlayerPosition = end;
-        }
+        path = path.GetRange(0, Mathf.Min(1, path.Count));
     }
 
     private IEnumerator MoveAlongPath(List<Tile> path)

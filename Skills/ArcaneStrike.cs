@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ArcaneStrike : ActiveSkill
 {
-    public ArcaneStrike()
+    public ArcaneStrike(Image _skillCooldown, GameObject _currentCooldownText, GameObject _skillEffect) : base(_skillCooldown, _currentCooldownText,  _skillEffect)
     {
         Name = "Arcane Strike";
         Description = "A Powerful True Damage Slash";
@@ -16,11 +17,6 @@ public class ArcaneStrike : ActiveSkill
 
         DamageBoost = 0.3f;
     }    
-    
-    public override void ActivateSkill()
-    {
-        
-    }
 
     public override int SkillDamage(int PlayerDamage)
     {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Skill
 {
@@ -10,14 +11,14 @@ public abstract class Skill
     protected int Cooldown;
     protected int CurrentCooldown;
     protected bool CanBeUsed;
-
-    public abstract void ActivateSkill();
-
+    public Image SkillCooldown;
+    public GameObject CurrentCooldownText;
+    public GameObject SkillEffect;
+    
     public string GetName()
     {
         return Name;
     }
-    
     public string GetDescription()
     {
         return Description;
@@ -64,6 +65,13 @@ public abstract class Skill
         }
         CanBeUsed = _canBeUsed;
     }
+
+    protected Skill(Image _skillImage, GameObject _currentCooldownText, GameObject _skillEffect)
+    {
+        SkillCooldown = _skillImage;
+        CurrentCooldownText = _currentCooldownText;
+        SkillEffect = _skillEffect;
+    }
     
 }
 
@@ -72,11 +80,31 @@ public abstract class ActiveSkill : Skill
     public bool isToggle;
     public float DamageBoost;
 
+    protected ActiveSkill(Image _skillImage, GameObject _currentCooldownText, GameObject _skillEffect) : base(_skillImage, _currentCooldownText, _skillEffect)
+    {
+        SkillCooldown = _skillImage;
+        CurrentCooldownText = _currentCooldownText;
+    }
+    
     public abstract int SkillDamage(int PlayerDamage);
 }   
     
 public abstract class PassiveSkill : Skill
 {
     public int Duration;
+    public int CurrentDuration;
+    public bool isActive;
+    public GameObject BuffDurationImage;
+    public GameObject CurrentBuffDurationText;
+
+    public abstract void ReduceCurrentDuration();
+    public abstract void ActivateSkill();
+    protected abstract void DeactivateSkill();
+    protected PassiveSkill(Image _skillImage, GameObject _currentCooldownText, GameObject _skillEffect, GameObject _buffDurationImage, GameObject _currentBuffDurationText) : base(_skillImage, _currentCooldownText, _skillEffect)
+    {
+        SkillCooldown = _skillImage;
+        CurrentCooldownText = _currentCooldownText;
+        SkillEffect = _skillEffect;
+    }
     
 }   

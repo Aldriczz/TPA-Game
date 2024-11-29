@@ -13,11 +13,6 @@ public class DamageText : MonoBehaviour
     private float moveSpeed = 0.5f;
     private float timer;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
     public void Activate(int damage, Color color)
     {
         timer = lifetime;
@@ -27,7 +22,6 @@ public class DamageText : MonoBehaviour
         StartingPosition = transform.position;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (timer > 0)

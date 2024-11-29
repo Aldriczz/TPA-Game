@@ -56,6 +56,7 @@ public class Player : MonoBehaviour
     {
         inputControl.Player.Move.performed += ctx => OnClickMove();
         inputControl.Player.Skill1.performed += ctx => SkillSystem.Instance.ActivateSkill1();
+        inputControl.Player.Skill2.performed += ctx => SkillSystem.Instance.ActivateSkill2();
         EnableInput();
     }
     
@@ -99,6 +100,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    //Rapihin
     private IEnumerator Attack(RaycastHit hit)
     {
         var randomCritNumber = Random.Range(0, 100);
@@ -106,12 +108,22 @@ public class Player : MonoBehaviour
         transform.forward = target;
         
         var random = Random.Range(1, 4);
-        animator.SetTrigger($"attack{random}");
+        if (SkillSlotController.Instance.PlayerSkills.PlayerSkillsList[0] != null &&
+            SkillSlotController.Instance.PlayerSkills.PlayerSkillsList[0] is ActiveSkill activeSkill)
+        {
+            if(activeSkill.isToggle){  animator.SetTrigger($"arcanestrike");}
+            else
+            {
+                animator.SetTrigger($"attack{random}");
+            }
+        }
         
+        yield return new WaitForSeconds(0.5f);
+
         clipDuration = animator.GetCurrentAnimatorStateInfo(0).length;
         clipSpeed = animator.GetCurrentAnimatorStateInfo(0).speed;
         
-        GetComponent<PlayerStateMachine>().SkillReduceCooldownEventChannel.RaiseIntEvent(0);
+        GetComponent<PlayerStateMachine>().SkillReduceCooldownEventChannel.RaiseVoidEvent();
         GetComponent<PlayerStateMachine>().SkillUseEventChannel.RaiseGameObjectEvent(hit.transform.gameObject);
 
         if (randomCritNumber < stats.CritChance)

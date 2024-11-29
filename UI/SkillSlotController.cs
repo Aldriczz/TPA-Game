@@ -7,32 +7,35 @@ using UnityEngine.UI;
 
 public class SkillSlotController : MonoBehaviour
 {
+    public static SkillSlotController Instance { get; private set; }
+    
     public PlayerSkillsSO PlayerSkills;
     public PlayerStatsSO PlayerStats;
-    
-    [Header("Skill Cooldown")]
-    public Image SkillCooldown1;
-    public GameObject CurrentCooldownText1;
 
-    [Header("Skill Event Channel")] 
-    public IntEventChannel SkillCooldownEventChannel;
+    [Header("Skill Event Channel")]     
+    public VoidEventChannel SkillCooldownEventChannel;
     public GameObjectEventChannel SkillUsedEventChannel;
+
+    private void Start()
+    {
+        if (Instance == null) Instance = this; else Destroy(gameObject);
+    }
 
     private void OnEnable()
     {
-        SkillCooldownEventChannel.OnRaiseIntEvent += ReduceCooldown;
-        SkillCooldownEventChannel.OnRaiseIntEvent += UpdateCooldownUI;
+        SkillCooldownEventChannel.OnRaiseVoidEvent += ReduceCooldown;
+        SkillCooldownEventChannel.OnRaiseVoidEvent += UpdateCooldownUI;
         SkillUsedEventChannel.OnRaiseGameObjectEvent += UseSkill;
     }
 
     private void OnDisable()
     {
-        SkillCooldownEventChannel.OnRaiseIntEvent -= ReduceCooldown;
-        SkillCooldownEventChannel.OnRaiseIntEvent -= UpdateCooldownUI;
+        SkillCooldownEventChannel.OnRaiseVoidEvent -= ReduceCooldown;
+        SkillCooldownEventChannel.OnRaiseVoidEvent -= UpdateCooldownUI;
         SkillUsedEventChannel.OnRaiseGameObjectEvent -= UseSkill;
     }
 
-    private void ReduceCooldown(int turn)
+    private void ReduceCooldown()
     {
         if (PlayerSkills.PlayerSkillsList.Count == 0) return;
         foreach (var skill in PlayerSkills.PlayerSkillsList)
@@ -45,53 +48,48 @@ public class SkillSlotController : MonoBehaviour
                     skill.SetCanBeUsed(true);
                 }
             }
+            if (skill is PassiveSkill passiveSkill)
+            {
+                passiveSkill.ReduceCurrentDuration();   
+            }
         }
     }
 
-    private void UpdateCooldownUI(int turn)
+    public void UpdateCooldownUI()
     {
         if (PlayerSkills.PlayerSkillsList.Count == 0) return;
-        
-        SkillCooldown1.fillAmount = (float) PlayerSkills.PlayerSkillsList[0].GetCurrentCooldown() / (float) PlayerSkills.PlayerSkillsList[0].GetCooldown();
+        foreach (var skill in PlayerSkills.PlayerSkillsList)
+        {
+            skill.SkillCooldown.fillAmount = (float) skill.GetCurrentCooldown() / (float) skill.GetCooldown();
+            
+            skill.CurrentCooldownText.GetComponent<Text>().text = (skill.GetCurrentCooldown() == 0) ?  "" : skill.GetCurrentCooldown().ToString();
 
-        if (PlayerSkills.PlayerSkillsList[0].GetCurrentCooldown() == 0)
-        {
-            CurrentCooldownText1.GetComponent<Text>().text = "";
+            if (skill is PassiveSkill passiveSkill)
+            {
+                passiveSkill.BuffDurationImage.GetComponentInChildren<Image>().fillAmount = (float) passiveSkill.CurrentDuration / (float) passiveSkill.Duration;
+                passiveSkill.CurrentBuffDurationText.GetComponent<Text>().text = (passiveSkill.CurrentDuration <= 0) ? "" : passiveSkill.CurrentDuration.ToString();
+            }
         }
-        else
-        {
-            CurrentCooldownText1.GetComponent<Text>().text = PlayerSkills.PlayerSkillsList[0].GetCurrentCooldown().ToString();
-        }
+        
     }
 
     private void UseSkill(GameObject enemy)
     {
         if (PlayerSkills.PlayerSkillsList.Count == 0) return;
-        foreach (var skill in PlayerSkills.PlayerSkillsList)
+        for (var i = 0; i < PlayerSkills.PlayerSkillsList.Count; i++)
         {
+            var skill = PlayerSkills.PlayerSkillsList[i];
             if (skill is ActiveSkill activeSkill && activeSkill.GetCanBeUsed() == true && activeSkill.isToggle == true)
             {
                 enemy.transform.Find($"Canvas/Bar/{skill.GetName() + " Damage Text"}").GetComponent<DamageText>().Activate(activeSkill.SkillDamage(PlayerStats.Damage), Color.blue);
                 enemy.transform.GetComponent<Enemy>().Stat.CurrentHealth -= activeSkill.SkillDamage(PlayerStats.Damage);
                 activeSkill.isToggle = false;
-                SkillSystem.Instance.Skill1ToggleImage.gameObject.SetActive(false);
-                SkillSystem.Instance.SkillEffect1.SetActive(false);
+                SkillSystem.Instance.SkillToggleImageList[i].gameObject.SetActive(false);
+                SkillSystem.Instance.SkillEffectList[i].SetActive(false);
                 activeSkill.SetCanBeUsed(false);
-                UpdateCooldownUI(0);
+                UpdateCooldownUI();
             }
         }
-    }
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    }   
+    
 }

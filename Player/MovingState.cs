@@ -63,7 +63,7 @@ public class MovingState : State
                         yield return null;
                     }
 
-                    stateMachine.SkillReduceCooldownEventChannel.RaiseIntEvent(0);
+                    stateMachine.SkillReduceCooldownEventChannel.RaiseVoidEvent();
                     stateMachine.transform.position = targetPosition;
                     TurnGameManager.Instance.SwitchGameState();
                     yield break;
@@ -71,7 +71,7 @@ public class MovingState : State
                 yield return null;
             }
             
-            stateMachine.SkillReduceCooldownEventChannel.RaiseIntEvent(0);
+            stateMachine.SkillReduceCooldownEventChannel.RaiseVoidEvent();
             stateMachine.transform.position = targetPosition;
         }
 

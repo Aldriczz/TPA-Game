@@ -13,7 +13,7 @@ public class PlayerStateMachine : MonoBehaviour
     [HideInInspector] public IdleState idleState;
     [HideInInspector] public MovingState movingState;
      public TurnChangeEventChannel turnChangeEventChannel;
-     public IntEventChannel SkillReduceCooldownEventChannel;
+     public VoidEventChannel SkillReduceCooldownEventChannel;
      public GameObjectEventChannel SkillUseEventChannel;
 
      private Player player;
