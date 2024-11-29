@@ -76,7 +76,7 @@ public class SkillSystem : MonoBehaviour
     public void ActivateSkill1()
     {
         if (PlayerSkills.PlayerSkillsList.Count == 0) return;
-        if (PlayerSkills.PlayerSkillsList.Count - 1 <= (int)AllSkillIndex.ARCANE_STRIKE) return;
+        if (PlayerSkills.PlayerSkillsList.Count - 1 < (int)AllSkillIndex.ARCANE_STRIKE) return;
         if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.ARCANE_STRIKE].GetCanBeUsed() == false) return;
 
         if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.ARCANE_STRIKE] is ActiveSkill activeSkill)

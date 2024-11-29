@@ -9,48 +9,16 @@ public class DungeonGenerator : MonoBehaviour
 {
     public static DungeonGenerator Instance;
 
-    [HideInInspector] public int curLvl = 1;
     [HideInInspector] public char[,] map;
     [HideInInspector] public Tile[,] tileMap;
     [HideInInspector] public GameObject[,] tileGameObjectsMap;
     [HideInInspector] public List<Room> roomList;
-    [HideInInspector] public List<EnemyStateMachine> enemyList;
 
     [HideInInspector]
     public int widthMap;
     [HideInInspector]
     public int lengthMap;
-
-    [SerializeField]
-    private GameObject Player;
-    
-    private string[] EnemyNames =
-    {
-        "AC",
-        "AS",
-        "BD",
-        "BT",
-        "CT",
-        "FO",
-        "GN",
-        "GY",
-        "HO",
-        "KH",
-        "MM",
-        "MR",
-        "MV",
-        "NS",
-        "OV",
-        "PL",
-        "RU",
-        "TI",
-        "VD",
-        "VM",
-        "WS",
-        "WW",
-        "YD"
-    };
-    void Awake()
+    private void Start()
     {
         if (Instance == null)
         {
@@ -72,16 +40,10 @@ public class DungeonGenerator : MonoBehaviour
         
         ConnectRooms();
         GenerateMap();
-        GenerateDecorations();
-        SpawnEnemies();
+        
     }
 
-    private void Start()
-    {
-        PutPlayer(Player);
-    }
-
-    void InitMap()
+    private void InitMap()
     {
         for (int i = 0; i < widthMap; i++)
         {
@@ -93,7 +55,7 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    void RandomizeMap()
+    private void RandomizeMap()
     {
         int attempts = 10;
         while (attempts > 0)
@@ -114,7 +76,7 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    bool IsRoomValid(Room room)
+    private bool IsRoomValid(Room room)
     {
         if (room.leftCorner.x + room.length + 1 >= lengthMap ||
             room.leftCorner.y + room.width + 1 >= widthMap)
@@ -134,7 +96,7 @@ public class DungeonGenerator : MonoBehaviour
         return true;
     }
 
-    void AddRoom(Room newRoom)
+    private void AddRoom(Room newRoom)
     {
         roomList.Add(newRoom);
         int x = (int)newRoom.leftCorner.x;
@@ -150,7 +112,7 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    void GenerateMap()
+    private void GenerateMap()
     {
         for (int i = 0; i < lengthMap; i++)
         {
@@ -172,21 +134,6 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
     }
-
-    private void PutPlayer(GameObject player)
-    {
-        int x = Random.Range(1, lengthMap - 1);
-        int y = Random.Range(1, widthMap - 1);
-
-        while (map[x, y] == '.' || map[x, y] == '#')
-        {
-            x = Random.Range(1, lengthMap - 1);
-            y = Random.Range(1, widthMap - 1);
-        }
-        
-        player.transform.position = new Vector3(x, 0.75f, y);
-    }
-    
     private void ConnectRooms()
     {
         List<Vector2> roomCenters = new List<Vector2>();
@@ -207,7 +154,7 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    List<(Vector2, Vector2)> GenerateMST(List<Vector2> centers)
+    private List<(Vector2, Vector2)> GenerateMST(List<Vector2> centers)
     {
         List<(Vector2, Vector2)> connections = new List<(Vector2, Vector2)>();
         HashSet<Vector2> connected = new HashSet<Vector2>();
@@ -251,7 +198,7 @@ public class DungeonGenerator : MonoBehaviour
         return connections;
     }
 
-    void AddRandomConnections(List<Vector2> centers, List<(Vector2, Vector2)> connections)
+    private void AddRandomConnections(List<Vector2> centers, List<(Vector2, Vector2)> connections)
     {
         int extraConnections = Random.Range(1, centers.Count / 2);
         for (int i = 0; i < extraConnections; i++)
@@ -265,7 +212,7 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    void DrawCorridor(Vector2 start, Vector2 end)
+    private void DrawCorridor(Vector2 start, Vector2 end)
     {
         int x = (int)start.x;
         int y = (int)start.y;
@@ -288,116 +235,6 @@ public class DungeonGenerator : MonoBehaviour
             else y--;
         }
     }
-
-    private void GenerateDecorations()
-    {
-        for (int i = 0; i < lengthMap; i++)
-        {
-            for (int j = 0; j < widthMap; j++)
-            {
-                int r = Random.Range(0, 100);
-                int randomRotation = Random.Range(0, 360);
-                int fourRotationMultiplication = Random.Range(0, 5);
-                if (map[i, j] == ' ' && map[i - 1, j] != '-' && map[i + 1, j] != '-' && map[i, j - 1] != '-' && map[i, j + 1] != '-' 
-                    && map[i - 1, j] != '.' && map[i + 1, j] != '.' && map[i, j - 1] != '.' && map[i, j + 1] != '.'
-                    && map[i - 1, j + 1] != '.' && map[i + 1, j + 1] != '.' && map[i - 1, j - 1] != '.' && map[i + 1, j - 1] != '.')
-                {
-                    Quaternion objectRotation = Quaternion.Euler(0, randomRotation, 0);
-                    if (r < 5)
-                    {
-                        objectRotation = Quaternion.Euler(0, fourRotationMultiplication * 90, 0);
-                        Instantiate(Resources.Load<GameObject>("ChairAndTable"), new Vector3(i, 1f, j), objectRotation);
-                        map[i, j] = '.';
-                        
-                    }else if (r >= 5 && r < 10)
-                    {
-                        objectRotation = Quaternion.Euler(0, fourRotationMultiplication * 90, 0);
-                        Instantiate(Resources.Load<GameObject>("Chest"), new Vector3(i, 0.9f, j), objectRotation);
-                        map[i, j] = '.';
-                        
-                    }else if (r >= 10 && r < 20)
-                    {
-                        Instantiate(Resources.Load<GameObject>("Bookshelf"), new Vector3(i, 1.5f, j), objectRotation);
-                        map[i, j] = '.';
-                        
-                    }else if (r >= 20 && r < 25)
-                    {
-                        Instantiate(Resources.Load<GameObject>("Pillar"), new Vector3(i, 0.75f, j), objectRotation);
-                        map[i, j] = '.';
-                    }
-                    else if (r >= 25 && r < 30)
-                    {
-                        objectRotation = Quaternion.Euler(0, fourRotationMultiplication * 90, 0);
-                        Instantiate(Resources.Load<GameObject>("Box"), new Vector3(i, 0.96f, j), objectRotation);
-                        map[i, j] = '.';
-                        switch (fourRotationMultiplication)
-                        {
-                            case 0:
-                                map[i - 1, j] = '.';
-                                break;
-                            case 1:
-                                map[i - 1, j] = '.';
-                                break;
-                            case 2:
-                                map[i + 1, j] = '.';
-                                break;
-                            case 3:
-                                map[i, j - 1] = '.';
-                                break;
-                            case 4:
-                                map[i, j + 1] = '.';
-                                break;
-                            
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void SpawnEnemies()
-    {
-        int numberOfEnemies = 20;
-        int x = Random.Range(1, lengthMap - 1);
-        int y = Random.Range(1, widthMap - 1);
-        int rarity = Random.Range(0, 100);
-
-        while (numberOfEnemies > 0)
-        {
-            x = Random.Range(1, lengthMap - 1);
-            y = Random.Range(1, widthMap - 1);
-            if (map[x, y] == ' ')
-            {
-                GameObject enemy;
-                float angle = Random.Range(0, 360);
-                Quaternion objectRotation = Quaternion.Euler(0, angle, 0);
-                
-                if (rarity < curLvl / 2)
-                {
-                    enemy = Instantiate(Resources.Load<GameObject>("Entity/EliteEnemy"), new Vector3(x, 0.75f, y), objectRotation);
-                    enemy.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Elite", curLvl);
-                }
-                else if (rarity < curLvl + 5 / 2)
-                {
-                    enemy = Instantiate(Resources.Load<GameObject>("Entity/MediumEnemy"), new Vector3(x, 0.75f, y), objectRotation);
-                    enemy.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Medium", curLvl);
-                }
-                else
-                {
-                    enemy = Instantiate(Resources.Load<GameObject>("Entity/CommonEnemy"), new Vector3(x, 0.75f, y), objectRotation);
-                    enemy.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Common", curLvl);
-                }
-                
-                enemyList.Add(enemy.GetComponent<EnemyStateMachine>());
-                enemy.GetComponentInChildren<Text>().text = EnemyNames[Random.Range(0, 23)];
-                map[x, y] = '#';
-                enemy.transform.tag = "Enemy";
-                numberOfEnemies--;
-            }
-        }
-    }
-
-
     void Update()
     {
     }

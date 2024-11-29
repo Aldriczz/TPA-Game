@@ -15,6 +15,9 @@ public class PlayerStatsSO : ScriptableObject
     public int MaxExperience;
     public int Level;
     public int Zen;
+
+    public int UnlockLevel;
+    public int CurrentLevel;
     
     public void TakeDamage(int damage)
     {

@@ -25,8 +25,10 @@ public class Player : MonoBehaviour
     public PlayerStatsSO stats;
 
     public GameObject Sword;
+    
+    private RaycastHit hit;
 
-    private void Awake()
+    private void Start()
     {
         if (Instance == null)
         {
@@ -39,12 +41,10 @@ public class Player : MonoBehaviour
             
         inputControl = new InputControl();
         AssignInput();
-    }
-
-    private void Start()
-    {
+        
         ClickableLayerMask = LayerMask.GetMask("Enemy", "Ground");
         animator = GetComponent<Animator>();
+        
     }
 
     private void Update()
@@ -76,13 +76,12 @@ public class Player : MonoBehaviour
         {
             isClickedWhileMoving = true;
         }
-        RaycastHit hit;
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100, ClickableLayerMask))
         {
             if (hit.transform.tag == "Enemy" && Vector3.Distance(transform.position, hit.transform.position) <= 1)
             {
                 DisableInput();
-                StartCoroutine(Attack(hit));
+                StartAttackAnimation();
             }
             
             else if (hit.collider.tag == "Tile")
@@ -100,29 +99,36 @@ public class Player : MonoBehaviour
         }
     }
 
-    //Rapihin
-    private IEnumerator Attack(RaycastHit hit)
+    private void StartAttackAnimation()
     {
-        var randomCritNumber = Random.Range(0, 100);
         var target = (hit.transform.position - transform.position).normalized;
         transform.forward = target;
-        
+
         var random = Random.Range(1, 4);
-        if (SkillSlotController.Instance.PlayerSkills.PlayerSkillsList[0] != null &&
-            SkillSlotController.Instance.PlayerSkills.PlayerSkillsList[0] is ActiveSkill activeSkill)
+        if (SkillSlotController.Instance.PlayerSkills.PlayerSkillsList.Count == 0)
         {
-            if(activeSkill.isToggle){  animator.SetTrigger($"arcanestrike");}
-            else
+            animator.SetTrigger($"attack{random}");
+        }
+        else
+        {
+            if (SkillSlotController.Instance.PlayerSkills.PlayerSkillsList[0] != null &&
+                SkillSlotController.Instance.PlayerSkills.PlayerSkillsList[0] is ActiveSkill activeSkill)
             {
-                animator.SetTrigger($"attack{random}");
+                if (activeSkill.isToggle)
+                {
+                    animator.SetTrigger($"arcanestrike");
+                }
+                else
+                {
+                    animator.SetTrigger($"attack{random}");
+                }
             }
         }
-        
-        yield return new WaitForSeconds(0.5f);
+    }
 
-        clipDuration = animator.GetCurrentAnimatorStateInfo(0).length;
-        clipSpeed = animator.GetCurrentAnimatorStateInfo(0).speed;
-        
+    private void StartAttack()
+    {
+        var randomCritNumber = Random.Range(0, 100);
         GetComponent<PlayerStateMachine>().SkillReduceCooldownEventChannel.RaiseVoidEvent();
         GetComponent<PlayerStateMachine>().SkillUseEventChannel.RaiseGameObjectEvent(hit.transform.gameObject);
 
@@ -134,9 +140,10 @@ public class Player : MonoBehaviour
         {
             hit.transform.GetComponent<Enemy>().Gethit(stats.Damage, Color.white);
         }
-        
-        yield return new WaitForSeconds(clipDuration / clipSpeed);
+    }
 
+    private void EndAttack()
+    {
         TurnGameManager.Instance.SwitchGameState();
     }
 

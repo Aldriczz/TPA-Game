@@ -16,6 +16,9 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] private Slider HPBar;
     [SerializeField] private Slider EaseHPBar;
+    
+    public IntEventChannel ZenUpdateEventChannel;
+    public VoidEventChannel EnemyNumberUpdateEventChannel;
 
     private DamageText _damageText;
     
@@ -82,9 +85,12 @@ public class Enemy : MonoBehaviour
 
     private void Died()
     {
+        EntitySpawnerManager.Instance.enemyList.Remove(GetComponent<EnemyStateMachine>());
         DungeonGenerator.Instance.map[(int)transform.position.x, (int)transform.position.z] = ' ';
         TurnGameManager.Instance.agroEnemies.Remove(GetComponent<EnemyStateMachine>());
         ExpManager.Instance.AddExp(Stat.ExpDrop);
-        gameObject.SetActive(false);
+        ZenUpdateEventChannel.RaiseIntEvent(Stat.ZenDrop);
+        EnemyNumberUpdateEventChannel.RaiseVoidEvent();
+        Destroy(gameObject);
     }
 }

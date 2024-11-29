@@ -14,6 +14,7 @@ public class ExpManager : MonoBehaviour
     public PlayerStatsSO PlayerStats;
     public IntEventChannel SetupExpBarEventChannel;
     public IntEventChannel UpdateExpBarEventChannel;
+    public VoidEventChannel LevelUpdateEventChannel;
     
     // Start is called before the first frame update
     void Start()
@@ -46,5 +47,6 @@ public class ExpManager : MonoBehaviour
         PlayerStats.CurrentExperience = PlayerStats.CurrentExperience - PlayerStats.MaxExperience;
         PlayerStats.MaxExperience = (int)expCurve.Evaluate(PlayerStats.Level);
         SetupExpBarEventChannel.RaiseIntEvent(PlayerStats.MaxExperience);
+        LevelUpdateEventChannel.RaiseVoidEvent();
     }
 }
