@@ -57,7 +57,6 @@ public class EntitySpawnerManager : MonoBehaviour
         GenerateDecorations();
         SpawnEnemies();
         PutPlayer(Player);
-
     }
 
     // Update is called once per frame
@@ -147,7 +146,7 @@ public class EntitySpawnerManager : MonoBehaviour
     
     private void SpawnEnemies()
     {
-        int numberOfEnemies = 20;
+        int numberOfEnemies = 5 + PlayerStats.CurrentLevel / 2 +  Random.Range(0, 10);
         int x = Random.Range(1, lengthMap - 1);
         int y = Random.Range(1, widthMap - 1);
         int rarity = Random.Range(0, 100);

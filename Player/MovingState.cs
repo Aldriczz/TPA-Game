@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MovingState : State
 {
-    private float speed;
     private Vector3 velocity;
     private bool isMoving;
     private Coroutine moveCoroutine;
@@ -17,7 +16,6 @@ public class MovingState : State
 
     public override void Enter()
     {
-        speed = 0f;
         StartMovingAlongPath(player.resultMap);
     }
     
@@ -85,12 +83,7 @@ public class MovingState : State
 
     public override void LogicUpdate()
     {
-        if (speed > 1)
-        {
-            speed = 1;
-        }
-        player.animator.SetFloat("speed", speed);
-        speed += Time.deltaTime * 50;
+        player.animator.SetFloat("speed", 1f);
 
         if (!player.isMoving)
         {

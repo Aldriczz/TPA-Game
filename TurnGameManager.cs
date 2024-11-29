@@ -33,6 +33,7 @@ public class TurnGameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            PlayerStateMachine.Instance.SkillReduceCooldownEventChannel.RaiseVoidEvent();
             SwitchGameState();
         }
     }

@@ -12,7 +12,7 @@ public class Upgradeable : MonoBehaviour
     public IntEventChannel UpgradeCritDmgEventChannel;
     public void UpgradeHealthButton()
     {
-        UpgradeHealthEventChannel.RaiseIntEvent(10);
+        UpgradeHealthEventChannel.RaiseIntEvent(50);
     }
     public void UpgradeAttackButton()
     {
@@ -24,7 +24,7 @@ public class Upgradeable : MonoBehaviour
     }
     public void UpgradeLuckButton()
     {
-        UpgradeLuckEventChannel.RaiseIntEvent(2);
+        UpgradeLuckEventChannel.RaiseIntEvent(1);
     }
     public void UpgradeCritDmgButton()
     {

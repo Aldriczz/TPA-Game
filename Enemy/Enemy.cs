@@ -86,11 +86,17 @@ public class Enemy : MonoBehaviour
     private void Died()
     {
         EntitySpawnerManager.Instance.enemyList.Remove(GetComponent<EnemyStateMachine>());
-        DungeonGenerator.Instance.map[(int)transform.position.x, (int)transform.position.z] = ' ';
         TurnGameManager.Instance.agroEnemies.Remove(GetComponent<EnemyStateMachine>());
+
+        DungeonGenerator.Instance.map[(int)transform.position.x, (int)transform.position.z] = ' ';
         ExpManager.Instance.AddExp(Stat.ExpDrop);
         ZenUpdateEventChannel.RaiseIntEvent(Stat.ZenDrop);
         EnemyNumberUpdateEventChannel.RaiseVoidEvent();
+        
+        if (EntitySpawnerManager.Instance.enemyList.Count == 0)
+        {
+            PopUpUI.Instance.ShowFloorClearedPopUp();
+        }
         Destroy(gameObject);
     }
 }

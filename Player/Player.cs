@@ -45,6 +45,7 @@ public class Player : MonoBehaviour
         ClickableLayerMask = LayerMask.GetMask("Enemy", "Ground");
         animator = GetComponent<Animator>();
         
+        stats.CurrentHealth = stats.MaxHealth;
     }
 
     private void Update()
@@ -57,6 +58,7 @@ public class Player : MonoBehaviour
         inputControl.Player.Move.performed += ctx => OnClickMove();
         inputControl.Player.Skill1.performed += ctx => SkillSystem.Instance.ActivateSkill1();
         inputControl.Player.Skill2.performed += ctx => SkillSystem.Instance.ActivateSkill2();
+        // inputControl.Menu.Pause.performed += ctx => PauseUI.Instance.PauseUIToggle();
         EnableInput();
     }
     
@@ -67,7 +69,7 @@ public class Player : MonoBehaviour
 
     public void DisableInput()
     {
-        inputControl.Disable();
+        inputControl.Player.Disable();
     }
 
     private void OnClickMove()

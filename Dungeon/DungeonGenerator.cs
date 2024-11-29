@@ -131,6 +131,10 @@ public class DungeonGenerator : MonoBehaviour
                         Instantiate(Resources.Load<GameObject>($"FloorDecoration{r + 1}"), new Vector3(i, 0.76f, j), objectRotation);
                     }
                 }
+                else
+                {
+                    GameObject tile = Instantiate(Resources.Load<GameObject>("Empty Tile"), new Vector3(i, 0, j), Quaternion.identity);
+                }
             }
         }
     }
