@@ -9,7 +9,8 @@ public class TurnGameManager : MonoBehaviour
     public enum GameState { PlayerTurn, EnemyTurn } 
     private GameState currentGameState = GameState.PlayerTurn;
     [SerializeField] private TurnChangeEventChannel turnChangeEventChannel;
-    [SerializeField] public List<EnemyStateMachine> agroEnemies;
+    [SerializeField] public List<EnemyStateMachine> AgroEnemies;
+    [SerializeField] public List<EnemyStateMachine> AlertEnemies;
 
     private void Awake()
     {
@@ -25,7 +26,8 @@ public class TurnGameManager : MonoBehaviour
 
     void Start()
     {
-        agroEnemies = new List<EnemyStateMachine>();
+        AgroEnemies = new List<EnemyStateMachine>();
+        AlertEnemies = new List<EnemyStateMachine>();
         turnChangeEventChannel.RaiseEvent(currentGameState);
     }
 
@@ -56,15 +58,17 @@ public class TurnGameManager : MonoBehaviour
 
     private IEnumerator HandleEnemyTurn()
     {
-        List<EnemyStateMachine> AgroEnemies = new List<EnemyStateMachine>(agroEnemies);
+        // List<EnemyStateMachine> AgroEnemies = new List<EnemyStateMachine>(AgroEnemies);
 
         for(var i = 0; i < AgroEnemies.Count; i++){
-            if (!AgroEnemies[i].isRealized)
+            if (AgroEnemies[i].isRealized)
+            {
+                AgroEnemies[i].canDoAction = true;
+            }
+            else
             {
                 AgroEnemies[i].isRealized = true;
-                yield return null;
             }
-            AgroEnemies[i].canDoAction = true;
             
             yield return new WaitUntil(() => AgroEnemies[i].canDoAction == false || AgroEnemies[i].GetComponent<Enemy>().isAlive == false);
         }

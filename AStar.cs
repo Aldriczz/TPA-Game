@@ -84,7 +84,7 @@ public class AStar
 
             }
         }
-        return traceback(curr);
+        return null;
     }
 
     private List<Tile> traceback(Tile curr){

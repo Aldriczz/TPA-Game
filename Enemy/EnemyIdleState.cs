@@ -36,10 +36,8 @@ public class EnemyIdleState : EnemyState
             playerInSight = true;
         }
 
-        if (Physics.Raycast(enemyPos, direction, out hit, 5f, stateMachine.layerMask))
+        if (Vector3.Distance(playerPos, enemyPos) <= 6)
         {
-            if (hit.collider.tag == "Player")
-            {
                 Player.Instance.isClickedWhileMoving = true;
                 
                 if (!playerInSight)
@@ -50,8 +48,10 @@ public class EnemyIdleState : EnemyState
                 {
                     stateMachine.ChangeState(stateMachine.enemyChaseState);
                 }
-                
-            }
+        }
+        else
+        {
+            stateMachine.ChangeState(stateMachine.enemyIdleState);
         }
     }
 

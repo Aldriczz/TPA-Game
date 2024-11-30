@@ -153,6 +153,7 @@ public class EntitySpawnerManager : MonoBehaviour
 
         while (numberOfEnemies > 0)
         {
+            
             x = Random.Range(1, lengthMap - 1);
             y = Random.Range(1, widthMap - 1);
             if (dungeonGenerator.map[x, y] == ' ')

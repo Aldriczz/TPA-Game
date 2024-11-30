@@ -6,12 +6,11 @@ using UnityEngine.UI;
 
 public class EnemyChaseState : EnemyState
 {
-    public List<Tile> path = new List<Tile>();
+    public List<Tile> path;
     private PlayerStateMachine playerStateMachine;
     private Tile lastPlayerPosition;
     private Vector3 playerPosition;
     private Vector3 enemyPosition;
-    private Coroutine movementCoroutine;
 
     public EnemyChaseState(EnemyStateMachine _stateMachine, Enemy _enemy) : base(_stateMachine, _enemy)
     {
@@ -21,9 +20,12 @@ public class EnemyChaseState : EnemyState
 
     public override void Enter()
     {
+        stateMachine.isRealized = false;
         stateMachine.isMoving = false;
         playerStateMachine = PlayerStateMachine.Instance;
-        TurnGameManager.Instance.agroEnemies.Add(stateMachine);
+        TurnGameManager.Instance.AgroEnemies.Add(stateMachine);
+        TurnGameManager.Instance.AlertEnemies.Remove(stateMachine);
+        List<Tile> path = new List<Tile>();
         
         var AgroText = enemy.transform.Find("Canvas/Bar/Agro Text");
         AgroText.gameObject.SetActive(true);
@@ -44,17 +46,15 @@ public class EnemyChaseState : EnemyState
                 stateMachine.isMoving = true;
 
                 UpdatePathToPlayer();
-
-                if (movementCoroutine != null)
-                {
-                    stateMachine.StopCoroutine(movementCoroutine);
-                }
-
-                movementCoroutine = stateMachine.StartCoroutine(MoveAlongPath(path));
+                
+                if(path == null) SearchAlternatePath();
+                
+                stateMachine.StartCoroutine(MoveAlongPath(path));
+                
             }
             else if (!stateMachine.isMoving && Vector3.Distance(playerPosition, enemyPosition) <= 1)
             {
-                enemy.animator.SetFloat("speed", 0f); // Ensure idle animation
+                enemy.animator.SetFloat("speed", 0f);
                 Attack();
             }
         }
@@ -74,8 +74,8 @@ public class EnemyChaseState : EnemyState
         var end = new Tile((int)playerPosition.x, (int)playerPosition.z);
         
         path = stateMachine.astar.Trace(start, end, DungeonGenerator.Instance.map);
-
-        path = path.GetRange(0, Mathf.Min(1, path.Count));
+        
+        if(path != null)  path = path.GetRange(0, Mathf.Min(1, path.Count));
     }
 
     private IEnumerator MoveAlongPath(List<Tile> path)
@@ -102,6 +102,29 @@ public class EnemyChaseState : EnemyState
         EndAction();
     }
 
+    private void SearchAlternatePath()
+    {
+        Vector3 TempPath;
+        Vector3 AlternatePath = new Vector3(999999, 999999, 999999);
+        int[] moveX = { 0, 1,  0, -1, 0 };
+        int[] moveY = { 1, 0, -1,  0, 0 };
+
+        for (var i = 0; i < moveX.Length; i++)
+        {
+            TempPath = new Vector3(enemy.transform.position.x + moveX[i],enemy.transform.position.y, enemy.transform.position.z + moveY[i]);
+            
+            if (DungeonGenerator.Instance.map[(int)TempPath.x, (int)TempPath.z] == '#') continue;
+            
+            if (Vector3.Distance(TempPath, Player.Instance.transform.position) < Vector3.Distance(AlternatePath, Player.Instance.transform.position))
+            {
+                AlternatePath = TempPath;
+            }
+            Debug.Log("Iterate: " + i);
+        }
+        path.Add(new Tile((int) AlternatePath.x,(int) AlternatePath.z));
+        Debug.Log(AlternatePath);
+    }
+
     private void Attack()
     {
         if (!stateMachine.isAttacking)
@@ -123,12 +146,6 @@ public class EnemyChaseState : EnemyState
 
     public override void Exit()
     {
-        if (movementCoroutine != null)
-        {
-            stateMachine.StopCoroutine(movementCoroutine);
-            movementCoroutine = null;
-        }
-
         path.Clear();
         stateMachine.isMoving = false;
     }

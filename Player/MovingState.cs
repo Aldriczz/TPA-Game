@@ -6,7 +6,6 @@ public class MovingState : State
 {
     private Vector3 velocity;
     private bool isMoving;
-    private Coroutine moveCoroutine;
     public MovingState(PlayerStateMachine _stateMachine, Player _player, Transform _cam) : base(_stateMachine, _player, _cam)
     {
         stateMachine = _stateMachine;
@@ -21,17 +20,12 @@ public class MovingState : State
     
     public void StartMovingAlongPath(List<Tile> path)
     {
-        if (moveCoroutine != null && player.isClickedWhileMoving)
-        {
-            stateMachine.StopCoroutine(moveCoroutine);
-            
-        }
 
-        if (TurnGameManager.Instance.agroEnemies.Count > 0)
+        if (TurnGameManager.Instance.AlertEnemies.Count > 0 || TurnGameManager.Instance.AgroEnemies.Count > 0)
         {
             path = path.GetRange(0, Mathf.Min(1, path.Count));
         }
-        moveCoroutine = stateMachine.StartCoroutine(MoveAlongPath(path));
+        stateMachine.StartCoroutine(MoveAlongPath(path));
     }
     
     private IEnumerator MoveAlongPath(List<Tile> path)

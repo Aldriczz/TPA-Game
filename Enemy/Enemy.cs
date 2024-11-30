@@ -86,7 +86,7 @@ public class Enemy : MonoBehaviour
     private void Died()
     {
         EntitySpawnerManager.Instance.enemyList.Remove(GetComponent<EnemyStateMachine>());
-        TurnGameManager.Instance.agroEnemies.Remove(GetComponent<EnemyStateMachine>());
+        TurnGameManager.Instance.AgroEnemies.Remove(GetComponent<EnemyStateMachine>());
 
         DungeonGenerator.Instance.map[(int)transform.position.x, (int)transform.position.z] = ' ';
         ExpManager.Instance.AddExp(Stat.ExpDrop);
