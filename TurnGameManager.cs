@@ -58,19 +58,19 @@ public class TurnGameManager : MonoBehaviour
 
     private IEnumerator HandleEnemyTurn()
     {
-        // List<EnemyStateMachine> AgroEnemies = new List<EnemyStateMachine>(AgroEnemies);
+        List<EnemyStateMachine> NewAgroEnemies = new List<EnemyStateMachine>(AgroEnemies);
 
-        for(var i = 0; i < AgroEnemies.Count; i++){
-            if (AgroEnemies[i].isRealized)
+        for(var i = 0; i < NewAgroEnemies.Count; i++){
+            if (NewAgroEnemies[i].isRealized)
             {
-                AgroEnemies[i].canDoAction = true;
+                NewAgroEnemies[i].canDoAction = true;
             }
             else
             {
-                AgroEnemies[i].isRealized = true;
+                NewAgroEnemies[i].isRealized = true;
             }
             
-            yield return new WaitUntil(() => AgroEnemies[i].canDoAction == false || AgroEnemies[i].GetComponent<Enemy>().isAlive == false);
+            yield return new WaitUntil(() => NewAgroEnemies[i].canDoAction == false || NewAgroEnemies[i].GetComponent<Enemy>().isAlive == false);
         }
 
         SwitchGameState(); // End the enemy turn and switch back to the player

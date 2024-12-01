@@ -75,20 +75,25 @@ public class Enemy : MonoBehaviour
         HPBar.value = Stat.CurrentHealth;
         transform.forward = (Player.Instance.transform.position - transform.position).normalized; 
         animator.SetTrigger("gethit");
+        
+        AudioManager.Instance.PlayGetHit(transform);
 
         if (Stat.CurrentHealth <= 0)
         {
+            AudioManager.Instance.PlayDied(transform);
+            
             isAlive = false;
+            Destroy(GetComponent<BoxCollider>());
+            DungeonGenerator.Instance.map[(int)transform.position.x, (int)transform.position.z] = ' ';
             animator.SetTrigger("die");
+            
+            EntitySpawnerManager.Instance.enemyList.Remove(GetComponent<EnemyStateMachine>());
+            TurnGameManager.Instance.AgroEnemies.Remove(GetComponent<EnemyStateMachine>());
         }
     }
 
     private void Died()
     {
-        EntitySpawnerManager.Instance.enemyList.Remove(GetComponent<EnemyStateMachine>());
-        TurnGameManager.Instance.AgroEnemies.Remove(GetComponent<EnemyStateMachine>());
-
-        DungeonGenerator.Instance.map[(int)transform.position.x, (int)transform.position.z] = ' ';
         ExpManager.Instance.AddExp(Stat.ExpDrop);
         ZenUpdateEventChannel.RaiseIntEvent(Stat.ZenDrop);
         EnemyNumberUpdateEventChannel.RaiseVoidEvent();

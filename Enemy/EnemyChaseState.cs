@@ -29,6 +29,10 @@ public class EnemyChaseState : EnemyState
         
         var AgroText = enemy.transform.Find("Canvas/Bar/Agro Text");
         AgroText.gameObject.SetActive(true);
+        
+        AudioManager.Instance.PlayAgro(enemy.transform);
+        var target = (playerStateMachine.transform.position - enemy.transform.position).normalized;
+        enemy.transform.forward = target;
     }
 
     public override void HandleInput() { }
@@ -46,7 +50,8 @@ public class EnemyChaseState : EnemyState
                 stateMachine.isMoving = true;
 
                 UpdatePathToPlayer();
-                
+                DungeonGenerator.Instance.map[(int)stateMachine.transform.position.x, (int)stateMachine.transform.position.z] = ' ';
+
                 if(path == null) SearchAlternatePath();
                 
                 stateMachine.StartCoroutine(MoveAlongPath(path));
@@ -80,7 +85,6 @@ public class EnemyChaseState : EnemyState
 
     private IEnumerator MoveAlongPath(List<Tile> path)
     {
-        DungeonGenerator.Instance.map[(int)stateMachine.transform.position.x, (int)stateMachine.transform.position.z] = ' ';
         foreach (var targetTile in path)
         {
             var targetPosition = new Vector3(targetTile.x, 0.75f, targetTile.y);
@@ -113,7 +117,7 @@ public class EnemyChaseState : EnemyState
         {
             TempPath = new Vector3(enemy.transform.position.x + moveX[i],enemy.transform.position.y, enemy.transform.position.z + moveY[i]);
             
-            if (DungeonGenerator.Instance.map[(int)TempPath.x, (int)TempPath.z] == '#') continue;
+            if (DungeonGenerator.Instance.map[(int)TempPath.x, (int)TempPath.z] == '#' || DungeonGenerator.Instance.map[(int)TempPath.x, (int)TempPath.z] == '.') continue;
             
             if (Vector3.Distance(TempPath, Player.Instance.transform.position) < Vector3.Distance(AlternatePath, Player.Instance.transform.position))
             {
@@ -121,6 +125,7 @@ public class EnemyChaseState : EnemyState
             }
             Debug.Log("Iterate: " + i);
         }
+        path = new List<Tile>();
         path.Add(new Tile((int) AlternatePath.x,(int) AlternatePath.z));
         Debug.Log(AlternatePath);
     }
@@ -150,4 +155,3 @@ public class EnemyChaseState : EnemyState
         stateMachine.isMoving = false;
     }
 }
-

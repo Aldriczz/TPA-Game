@@ -16,6 +16,7 @@ public class MovingState : State
     public override void Enter()
     {
         StartMovingAlongPath(player.resultMap);
+        player.animator.SetFloat("speed", 1f);
     }
     
     public void StartMovingAlongPath(List<Tile> path)
@@ -35,7 +36,8 @@ public class MovingState : State
         foreach (Tile targetTile in path)
         {
             Vector3 targetPosition = new Vector3(targetTile.x, 0.75f, targetTile.y);
-            
+            AudioManager.Instance.PlayFootStep(player.transform);
+
             while (Vector3.Distance(stateMachine.transform.position, targetPosition) > 0.01f)
             {
                 stateMachine.transform.position = Vector3.MoveTowards(stateMachine.transform.position, targetPosition, player.moveSpeed * Time.deltaTime);
@@ -43,7 +45,6 @@ public class MovingState : State
                 stateMachine.transform.forward = Vector3.Slerp(stateMachine.transform.forward, dir, 30*Time.deltaTime);
                 if (player.isClickedWhileMoving)
                 {
-                    player.isMoving = false;
                     player.isClickedWhileMoving = false;
                     while (Vector3.Distance(stateMachine.transform.position, targetPosition) > 0.01f)
                     {
@@ -58,6 +59,7 @@ public class MovingState : State
                     stateMachine.SkillReduceCooldownEventChannel.RaiseVoidEvent();
                     stateMachine.transform.position = targetPosition;
                     TurnGameManager.Instance.SwitchGameState();
+                    player.isMoving = false;
                     yield break;
                 }
                 yield return null;
@@ -77,8 +79,6 @@ public class MovingState : State
 
     public override void LogicUpdate()
     {
-        player.animator.SetFloat("speed", 1f);
-
         if (!player.isMoving)
         {
             stateMachine.ChangeState(stateMachine.idleState);
@@ -91,7 +91,6 @@ public class MovingState : State
 
     public override void Exit()
     {
-        // character.animator.SetFloat("speed", 0f);
         HoverManager.Instance.path.Clear();
     }
 }

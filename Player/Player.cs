@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     [HideInInspector] public List<Tile> resultMap;
     [HideInInspector] public LayerMask ClickableLayerMask;
     private InputControl inputControl;
-    
+        
     public bool isMoving = false; 
     public bool isClickedWhileMoving = false;
     public float moveSpeed = 4f;
@@ -136,10 +136,12 @@ public class Player : MonoBehaviour
 
         if (randomCritNumber < stats.CritChance)
         {
+            AudioManager.Instance.PlaySwordCriticalSlash(transform);    
             hit.transform.GetComponent<Enemy>().Gethit(stats.Damage * stats.CritDamage / 100, Color.red);
         }
         else
         {
+            AudioManager.Instance.PlaySwordSlash(transform);
             hit.transform.GetComponent<Enemy>().Gethit(stats.Damage, Color.white);
         }
     }
@@ -162,6 +164,7 @@ public class Player : MonoBehaviour
     private void Died()
     {
         DisableInput();
+        PopUpUI.Instance.ShowGameOverPopUp();
     }
     
 }

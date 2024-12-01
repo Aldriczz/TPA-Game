@@ -18,9 +18,25 @@ public class PlayerStatsSO : ScriptableObject
 
     public int UnlockLevel;
     public int CurrentLevel;
-    
+
     public void TakeDamage(int damage)
     {
         CurrentHealth -= damage;
+    }
+
+    public void Reset()
+    {
+        MaxHealth = 20;
+        CurrentHealth = MaxHealth;
+        Damage = 4;
+        CritChance = 5;
+        CritDamage = 150;
+        Defense = 5;
+        CurrentExperience = 0;
+        MaxExperience = 0;
+        Level = 1;
+        UnlockLevel = 1;
+        CurrentLevel = 1;
+        Zen = 0;
     }
 }

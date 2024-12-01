@@ -9,6 +9,8 @@ public class PopUpUI : MonoBehaviour
     
     [SerializeField] 
     private GameObject FloorClearedUI;
+    [SerializeField]
+    private GameObject GameOverUI;
     
     [SerializeField]
     private PlayerStatsSO PlayerStats;
@@ -24,6 +26,12 @@ public class PopUpUI : MonoBehaviour
             PlayerStats.CurrentLevel++;
         }
         FloorClearedUI.SetActive(true);
+    }
+
+    public void ShowGameOverPopUp()
+    {
+        GameOverUI.SetActive(true);
+        Time.timeScale = 0;
     }
 
     public void FloorClearedContinueButton()

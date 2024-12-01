@@ -87,6 +87,7 @@ public class SkillSystem : MonoBehaviour
                 SkillEffectList[(int)AllSkillIndex.ARCANE_STRIKE].SetActive(true);
                 SkillToggleImageList[(int)ActiveSkillIndex.ARCANE_STRIKE].gameObject.SetActive(true);
                 activeSkill.isToggle = true;
+                AudioManager.Instance.PlayArcaneStrikeToggle(Player.Instance.transform);
             }
             else
             {

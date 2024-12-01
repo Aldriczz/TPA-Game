@@ -126,7 +126,7 @@ public class EntitySpawnerManager : MonoBehaviour
                                 dungeonGenerator.map[i - 1, j] = '.';
                                 break;
                             case 1:
-                                dungeonGenerator.map[i - 1, j] = '.';
+                                dungeonGenerator.map[i, j + 1] = '.';
                                 break;
                             case 2:
                                 dungeonGenerator.map[i + 1, j] = '.';

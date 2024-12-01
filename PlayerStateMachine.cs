@@ -5,14 +5,13 @@ using UnityEngine;
 public class PlayerStateMachine : MonoBehaviour
 {
     public static PlayerStateMachine Instance { get; private set; }
-    
+
     [SerializeField] private Transform camera;
     [SerializeField] private ParticleSystem particleVFX;
 
     [HideInInspector] public State currentState;
     [HideInInspector] public IdleState idleState;
     [HideInInspector] public MovingState movingState;
-     public TurnChangeEventChannel turnChangeEventChannel;
      public VoidEventChannel SkillReduceCooldownEventChannel;
      public GameObjectEventChannel SkillUseEventChannel;
 

@@ -94,9 +94,18 @@ public class AStar
             result.Add(curr); 
             curr = curr.Prev;
         }
-        result.RemoveAt(result.Count - 1);
-        result.Reverse();  
-        return result;
+
+        if (result.Count < 16)
+        {
+            result.RemoveAt(result.Count - 1);
+            result.Reverse();  
+            return result;
+        }
+        else
+        {
+            return null;
+        }
+        
     }
 
 }

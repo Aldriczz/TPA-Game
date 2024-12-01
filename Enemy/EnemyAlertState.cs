@@ -20,6 +20,8 @@ public class EnemyAlertState : EnemyState
         AlertText = enemy.transform.Find("Canvas/Bar/Alert Text");
         AlertText.gameObject.SetActive(true);
         TurnGameManager.Instance.AlertEnemies.Add(stateMachine);
+        
+        AudioManager.Instance.PlayAlert(enemy.transform);
     }
 
     public override void HandleInput()
