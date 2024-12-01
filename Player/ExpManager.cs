@@ -26,14 +26,15 @@ public class ExpManager : MonoBehaviour
         UpdateExpBarEventChannel.RaiseIntEvent(PlayerStats.CurrentExperience);
     }
 
-    private void Update()
+    private void OnEnable()
     {
+        AddExp(0);
     }
 
     public void AddExp(int exp)
     {
         PlayerStats.CurrentExperience += exp;
-        if (PlayerStats.CurrentExperience >= PlayerStats.MaxExperience)
+        while (PlayerStats.CurrentExperience >= PlayerStats.MaxExperience)
         {
             LevelUp();
         }

@@ -21,6 +21,7 @@ public class Damageable : MonoBehaviour
 
     public void TakeDamage(int damage, Color color)
     {
+        AudioManager.Instance.PlayGetHit(transform);
         damageText.Activate(damage, color);
         Player.Instance.animator.SetTrigger("gethit");
         PlayerStats.CurrentHealth -= damage;
@@ -28,6 +29,8 @@ public class Damageable : MonoBehaviour
         
         if (PlayerStats.CurrentHealth <= 0)
         {
+            AudioManager.Instance.PlayDied(transform);
+            Destroy(GetComponent<PlayerStateMachine>());
             GetComponent<Player>().animator.SetTrigger("die");
         }
     }

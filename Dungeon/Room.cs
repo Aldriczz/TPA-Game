@@ -8,6 +8,7 @@ public class Room
    public int width;
    public int length;
    public List<Vector2> EntrancePoints;
+   // public 
 
    public Room(Vector2 corner, int width, int length)
    {

@@ -16,7 +16,7 @@ public class Upgradeable : MonoBehaviour
     }
     public void UpgradeAttackButton()
     {
-        UpgradeAttackEventChannel.RaiseIntEvent(2);
+        UpgradeAttackEventChannel.RaiseIntEvent(3);
     }
     public void UpgradeDefenseButton()
     {

@@ -53,10 +53,21 @@ public class Enemy : MonoBehaviour
         var randomCritChance = Random.Range(0, 100);
         if (randomCritChance < Stat.CritChance)
         {
+            AudioManager.Instance.PlaySwordCriticalSlash(transform);
             Player.Instance.GetComponent<Damageable>().TakeDamage(Stat.Damage * Stat.CritDamage / 100, Color.red);
         }
         else
         {
+            Debug.Log(Stat.Type);
+            switch (Stat.Type)
+            {
+                case "Common":
+                    AudioManager.Instance.PlayPunch(transform);
+                    break;
+                default:
+                    AudioManager.Instance.PlaySwordSlash(transform);
+                    break;
+            }
             Player.Instance.GetComponent<Damageable>().TakeDamage(Stat.Damage, Color.white);
         }
     }
@@ -89,6 +100,8 @@ public class Enemy : MonoBehaviour
             
             EntitySpawnerManager.Instance.enemyList.Remove(GetComponent<EnemyStateMachine>());
             TurnGameManager.Instance.AgroEnemies.Remove(GetComponent<EnemyStateMachine>());
+            
+            if(TurnGameManager.Instance.AgroEnemies.Count == 0) AudioManager.Instance.PlayDungeonBackgroundMusic();
         }
     }
 

@@ -146,44 +146,71 @@ public class EntitySpawnerManager : MonoBehaviour
     
     private void SpawnEnemies()
     {
-        int numberOfEnemies = 5 + PlayerStats.CurrentLevel / 2 +  Random.Range(0, 10);
-        int x = Random.Range(1, lengthMap - 1);
-        int y = Random.Range(1, widthMap - 1);
-        int rarity = Random.Range(0, 100);
+        var RoomList = DungeonGenerator.Instance.roomList;
+        var RoomNumber = RoomList.Count;
+        var RoomCounter = 0;
+        var numberOfEnemies = 5 + PlayerStats.CurrentLevel / 3 +  Random.Range(0, 10);
+        var EnemyPerRoom = Mathf.Round((float) numberOfEnemies / (float) RoomNumber);
+        Debug.Log(EnemyPerRoom);
+        var EnemyCounterPerRoom = 0;
+
+        int x;
+        int y;
+        int rarity;
 
         while (numberOfEnemies > 0)
         {
-            
-            x = Random.Range(1, lengthMap - 1);
-            y = Random.Range(1, widthMap - 1);
+            x = Random.Range((int)RoomList[RoomCounter].leftCorner.x, (int)RoomList[RoomCounter].leftCorner.x + RoomList[RoomCounter].length - 1);
+            y = Random.Range((int)RoomList[RoomCounter].leftCorner.y, (int)RoomList[RoomCounter].leftCorner.y + RoomList[RoomCounter].width - 1);
+
+            rarity = Random.Range(0, 100);
+
             if (dungeonGenerator.map[x, y] == ' ')
             {
                 GameObject enemy;
                 float angle = Random.Range(0, 360);
                 Quaternion objectRotation = Quaternion.Euler(0, angle, 0);
-                
+
                 if (rarity < PlayerStats.CurrentLevel / 2)
                 {
-                    enemy = Instantiate(Resources.Load<GameObject>("Entity/EliteEnemy"), new Vector3(x, 0.75f, y), objectRotation);
-                    enemy.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Elite", PlayerStats.CurrentLevel);
+                    enemy = Instantiate(Resources.Load<GameObject>("Entity/EliteEnemy"), new Vector3(x, 0.75f, y),
+                        objectRotation);
+                    enemy.GetComponent<Enemy>().Stat =
+                        EnemyFactory.CreateEnemyStat("Elite", PlayerStats.CurrentLevel);
                 }
                 else if (rarity < PlayerStats.CurrentLevel + 5 / 2)
                 {
-                    enemy = Instantiate(Resources.Load<GameObject>("Entity/MediumEnemy"), new Vector3(x, 0.75f, y), objectRotation);
-                    enemy.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Medium", PlayerStats.CurrentLevel);
+                    enemy = Instantiate(Resources.Load<GameObject>("Entity/MediumEnemy"), new Vector3(x, 0.75f, y),
+                        objectRotation);
+                    enemy.GetComponent<Enemy>().Stat =
+                        EnemyFactory.CreateEnemyStat("Medium", PlayerStats.CurrentLevel);
                 }
                 else
                 {
-                    enemy = Instantiate(Resources.Load<GameObject>("Entity/CommonEnemy"), new Vector3(x, 0.75f, y), objectRotation);
-                    enemy.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Common", PlayerStats.CurrentLevel);
+                    enemy = Instantiate(Resources.Load<GameObject>("Entity/CommonEnemy"), new Vector3(x, 0.75f, y),
+                        objectRotation);
+                    enemy.GetComponent<Enemy>().Stat =
+                        EnemyFactory.CreateEnemyStat("Common", PlayerStats.CurrentLevel);
                 }
-                
+
                 enemyList.Add(enemy.GetComponent<EnemyStateMachine>());
                 enemy.GetComponentInChildren<Text>().text = EnemyNames[Random.Range(0, 23)];
                 dungeonGenerator.map[x, y] = '#';
                 enemy.transform.tag = "Enemy";
                 numberOfEnemies--;
+                EnemyCounterPerRoom++;
+                
+                if (EnemyCounterPerRoom == EnemyPerRoom)
+                {
+                    EnemyCounterPerRoom = 0;
+                    RoomCounter++;
+                    if (RoomCounter == RoomList.Count)
+                    {
+                        RoomCounter = 0;
+                    }
+                }
             }
+                
         }
     }
 }

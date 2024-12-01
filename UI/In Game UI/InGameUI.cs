@@ -64,9 +64,4 @@ public class InGameUI : MonoBehaviour
     {
         LevelNumber.text = "Level " + PlayerStats.Level.ToString();
     }
-    
-    void Update()
-    {
-        
-    }
 }

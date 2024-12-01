@@ -12,8 +12,8 @@ public class AStar
     int[] moveY = { 1, 0, -1,  0 };
     public AStar()
     {
-        lengthMap = 50;
-        widthMap = 50;
+        lengthMap = 70;
+        widthMap = 70;
         tileListQueue = new List<Tile>();
     }
 

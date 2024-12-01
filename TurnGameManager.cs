@@ -8,9 +8,13 @@ public class TurnGameManager : MonoBehaviour
     public static TurnGameManager Instance { get; private set; }
     public enum GameState { PlayerTurn, EnemyTurn } 
     private GameState currentGameState = GameState.PlayerTurn;
+    
     [SerializeField] private TurnChangeEventChannel turnChangeEventChannel;
     [SerializeField] public List<EnemyStateMachine> AgroEnemies;
     [SerializeField] public List<EnemyStateMachine> AlertEnemies;
+    
+    private bool InCombat = false;
+    private bool CombatMusicOn = false;
 
     private void Awake()
     {
@@ -46,12 +50,18 @@ public class TurnGameManager : MonoBehaviour
         if (currentGameState == GameState.PlayerTurn)
         {
             Player.Instance.EnableInput();
-            // turnChangeEventChannel.RaiseEvent(currentGameState);
         }
         else
         {
             Player.Instance.DisableInput();
             turnChangeEventChannel.RaiseEvent(currentGameState);
+            
+            InCombat = (AgroEnemies.Count > 0) ? true : false;
+            if (!CombatMusicOn && InCombat)
+            {
+                AudioManager.Instance.PlayCombatBackgroundMusic();
+            }
+            CombatMusicOn = InCombat;
             StartCoroutine(HandleEnemyTurn());
         }
     }

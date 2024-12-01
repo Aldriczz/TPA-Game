@@ -9,8 +9,8 @@ public class DungeonGenerator : MonoBehaviour
 {
     public static DungeonGenerator Instance;
 
-    [HideInInspector] public char[,] map;
-    [HideInInspector] public Tile[,] tileMap;
+    [HideInInspector] public char[,] map; 
+    private Tile[,] tileMap;
     [HideInInspector] public GameObject[,] tileGameObjectsMap;
     [HideInInspector] public List<Room> roomList;
 
@@ -28,8 +28,8 @@ public class DungeonGenerator : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        widthMap = 50;
-        lengthMap = 50;
+        widthMap = 70;
+        lengthMap = 70;
         map = new char[widthMap, lengthMap];
         tileMap = new Tile[widthMap, lengthMap];
         tileGameObjectsMap = new GameObject[widthMap, lengthMap];
@@ -57,22 +57,22 @@ public class DungeonGenerator : MonoBehaviour
 
     private void RandomizeMap()
     {
-        int attempts = 10;
+        int attempts = 15;
         while (attempts > 0)
         {
             
             int x = Random.Range(1, lengthMap - 1);
             int y = Random.Range(1, widthMap - 1);
-            int roomLength = Random.Range(4, 8);
-            int roomWidth = Random.Range(4, 8);
+            int roomLength = Random.Range(4, 11);
+            int roomWidth = Random.Range(4, 11);
 
             Room newRoom = new Room(new Vector2(x, y), roomWidth, roomLength);
             
             if (IsRoomValid(newRoom))
             {
                 AddRoom(newRoom);
-                attempts--; 
             }
+            attempts--; 
         }
     }
 

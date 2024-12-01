@@ -53,15 +53,13 @@ public class EnemyAlertState : EnemyState
         {
             if (hit.collider.name == "Player")
             {
-                Player.Instance.isClickedWhileMoving = true;
                 stateMachine.ChangeState(stateMachine.enemyChaseState);
             }
         }
-        else if (Physics.Raycast(enemyPos, direction, out hit, 6f, stateMachine.layerMask))
+        if (Physics.Raycast(enemyPos, direction, out hit, 6f, stateMachine.layerMask))
         {
             if (hit.collider.tag == "Player")
             {
-                Player.Instance.isClickedWhileMoving = true;
 
                 if (playerInSight)
                 {

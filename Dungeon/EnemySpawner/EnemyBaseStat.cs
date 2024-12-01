@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class EnemyBaseStat
 {
+    public string Type {get; set;}
     public int CurrentHealth { get; set;}
     public int MaxHealth { get; set;}
     public int Damage { get; set;}
@@ -19,9 +20,9 @@ public abstract class EnemyBaseStat
 
 public class CommonEnemy : EnemyBaseStat
 {
-    public string Type => "Common";
     public CommonEnemy(int multiplier)
     {
+        Type ="Common";
         MaxHealth = 10 * multiplier + Random.Range(0, multiplier) * 2;
         CurrentHealth = MaxHealth;
         Damage = 2 * multiplier;
@@ -35,9 +36,9 @@ public class CommonEnemy : EnemyBaseStat
 
 public class MediumEnemy : EnemyBaseStat
 {
-    public string Type => "Medium";
     public MediumEnemy(int multiplier)
     {
+        Type ="Medium";
         MaxHealth = 15 * multiplier + Random.Range(0, multiplier) * 2;
         CurrentHealth = MaxHealth;
         Damage = 3 * multiplier;
@@ -51,9 +52,9 @@ public class MediumEnemy : EnemyBaseStat
 
 public class EliteEnemy : EnemyBaseStat
 {
-    public string Type => "Elit";
     public EliteEnemy(int multiplier)
     {
+        Type ="Elite";
         MaxHealth = 25 * multiplier + Random.Range(0, multiplier) * 2;
         CurrentHealth = MaxHealth;
         Damage = 5 * multiplier;

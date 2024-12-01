@@ -87,6 +87,7 @@ public class EnemyChaseState : EnemyState
     {
         foreach (var targetTile in path)
         {
+            AudioManager.Instance.PlayFootStep(enemy.transform);
             var targetPosition = new Vector3(targetTile.x, 0.75f, targetTile.y);
             while (Vector3.Distance(stateMachine.transform.position, targetPosition) > 0.01f)
             {
