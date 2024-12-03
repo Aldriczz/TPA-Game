@@ -18,9 +18,7 @@ public class EnemyIdleState : EnemyState
 
     public override void HandleInput()
     {
-        
     }
-
     public override void LogicUpdate()
     {
         RaycastHit hit;
@@ -35,37 +33,32 @@ public class EnemyIdleState : EnemyState
         {
             playerInSight = true;
         }
-
-        if (Vector3.Distance(playerPos, enemyPos) <= 6)
-        {
-            Player.Instance.isClickedWhileMoving = true;
-
-            if (!playerInSight)
-            {
-                stateMachine.ChangeState(stateMachine.enemyAlertState);
-            }
-        }
-        else
-        {
-            stateMachine.ChangeState(stateMachine.enemyIdleState);
-        }
         
         if (Physics.Raycast(enemyPos, direction, out hit, 6f, stateMachine.layerMask))
         {
             if (hit.collider.tag == "Player")
             {
+                Player.Instance.isClickedWhileMoving = true;
                 stateMachine.ChangeState(stateMachine.enemyChaseState);
             }
+        }
+        
+        if (Vector3.Distance(playerPos, enemyPos) <= 6)
+        {
+            Player.Instance.isClickedWhileMoving = true;
+            
+            stateMachine.ChangeState(stateMachine.enemyAlertState);
+        }
+        else
+        {
+            stateMachine.ChangeState(stateMachine.enemyIdleState);
         }
     }
 
     public override void PhysicsUpdate()
     {
-        
     }
-
     public override void Exit()
     {
-        
     }
 }

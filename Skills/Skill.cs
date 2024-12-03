@@ -99,7 +99,7 @@ public abstract class PassiveSkill : Skill
 
     public abstract void ReduceCurrentDuration();
     public abstract void ActivateSkill();
-    protected abstract void DeactivateSkill();
+    public abstract void DeactivateSkill();
     protected PassiveSkill(Image _skillImage, GameObject _currentCooldownText, GameObject _skillEffect, GameObject _buffDurationImage, GameObject _currentBuffDurationText) : base(_skillImage, _currentCooldownText, _skillEffect)
     {
         SkillCooldown = _skillImage;

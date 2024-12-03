@@ -41,6 +41,7 @@ public class SkillSystem : MonoBehaviour
     {
         ARCANE_STRIKE,
         RAGE,
+        EQUINOX,
     }
     private enum ActiveSkillIndex
     {
@@ -51,6 +52,7 @@ public class SkillSystem : MonoBehaviour
     private enum PassiveSkillIndex
     {
         RAGE,
+        EQUINOX
     }
     
     private void Start()
@@ -67,6 +69,7 @@ public class SkillSystem : MonoBehaviour
         PlayerSkills.PlayerSkillsList = new List<Skill>();
         AvailableSkills.Add(new ArcaneStrike(SkillCooldownList[(int)AllSkillIndex.ARCANE_STRIKE], CurrentCooldownTextList[(int)AllSkillIndex.ARCANE_STRIKE], SkillEffectList[(int)AllSkillIndex.ARCANE_STRIKE]));
         AvailableSkills.Add(new Rage(SkillCooldownList[(int)AllSkillIndex.RAGE], CurrentCooldownTextList[(int)AllSkillIndex.RAGE], SkillEffectList[(int)AllSkillIndex.RAGE], SkillDurationGameObjectList[(int)PassiveSkillIndex.RAGE], SkillDurationTextList[(int)PassiveSkillIndex.RAGE]));
+        AvailableSkills.Add(new Equinox(SkillCooldownList[(int)AllSkillIndex.EQUINOX], CurrentCooldownTextList[(int)AllSkillIndex.EQUINOX], SkillEffectList[(int)AllSkillIndex.EQUINOX], SkillDurationGameObjectList[(int)PassiveSkillIndex.EQUINOX], SkillDurationTextList[(int)PassiveSkillIndex.EQUINOX]));
      }
 
     private void Update()
@@ -115,6 +118,24 @@ public class SkillSystem : MonoBehaviour
         if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.RAGE].GetCanBeUsed() == false) return;
         
         if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.RAGE] is PassiveSkill passiveSkill)
+        {
+            if (passiveSkill.GetCanBeUsed())
+            {
+                Player.Instance.animator.SetTrigger("buff");
+                passiveSkill.SetCanBeUsed(false);
+                passiveSkill.ActivateSkill();
+                SkillSlotController.Instance.UpdateCooldownUI();
+            }
+        }
+    }
+    
+    public void ActivateSkill3()
+    {
+        if (PlayerSkills.PlayerSkillsList.Count == 0) return;
+        if (PlayerSkills.PlayerSkillsList.Count - 1 < (int)AllSkillIndex.EQUINOX) return;
+        if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.EQUINOX].GetCanBeUsed() == false) return;
+        
+        if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.EQUINOX] is PassiveSkill passiveSkill)
         {
             if (passiveSkill.GetCanBeUsed())
             {

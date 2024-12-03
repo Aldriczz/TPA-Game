@@ -57,7 +57,7 @@ public class Rage : PassiveSkill
         BuffDurationImage.SetActive(true);
     }
 
-    protected override void DeactivateSkill()
+    public override void DeactivateSkill()
     {
         isActive = false;
         PlayerStats.Damage -= AtkbuffTemp;

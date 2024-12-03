@@ -21,6 +21,18 @@ public class Damageable : MonoBehaviour
 
     public void TakeDamage(int damage, Color color)
     {
+        foreach  (var skill in SkillSlotController.Instance.PlayerSkills.PlayerSkillsList)
+        {
+            if(skill.GetName() == "Equinox" && skill is PassiveSkill passiveSkill)
+                if (passiveSkill.isActive)
+                {
+                    AudioManager.Instance.PlayPunch(transform);
+                    damageText.ActivateDamageText(0, color);
+                    passiveSkill.DeactivateSkill();
+                    return;
+                }
+        }
+       
         AudioManager.Instance.PlayGetHit(transform);
         damageText.ActivateDamageText(damage, color);
         Player.Instance.animator.SetTrigger("gethit");

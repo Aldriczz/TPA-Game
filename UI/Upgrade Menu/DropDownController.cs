@@ -27,6 +27,7 @@ public class DropDownController : MonoBehaviour
     {
         dropdown = GetComponent<Dropdown>();
         UpdateUnlockLevels();
+        dropdown.value = PlayerStats.UnlockLevel;
     }
 
     private void UpdateUnlockLevels()

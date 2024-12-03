@@ -225,7 +225,6 @@ public class EntitySpawnerManager : MonoBehaviour
 
         while (!isSpawned)
         {
-            GameObject boss;
             float angle = Random.Range(0, 360);
             Quaternion objectRotation = Quaternion.Euler(0, angle, 0);
             var x = Random.Range(0, lengthMap);
@@ -233,6 +232,7 @@ public class EntitySpawnerManager : MonoBehaviour
             
             if (dungeonGenerator.map[x, y] == ' ')
             {
+                GameObject boss;
                 boss = Instantiate(Resources.Load<GameObject>("Entity/Boss"), new Vector3(x, 0.75f, y), objectRotation);
                 boss.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Boss", PlayerStats.CurrentLevel);
                 

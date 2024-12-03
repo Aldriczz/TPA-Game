@@ -16,6 +16,8 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] private Slider HPBar;
     [SerializeField] private Slider EaseHPBar;
+
+    [SerializeField] private GameObject Weapon;
     
     public IntEventChannel ZenUpdateEventChannel;
     public VoidEventChannel EnemyNumberUpdateEventChannel;
@@ -91,8 +93,14 @@ public class Enemy : MonoBehaviour
         
         Stat.CurrentHealth -= damage;
         HPBar.value = Stat.CurrentHealth;
-        transform.forward = (Player.Instance.transform.position - transform.position).normalized; 
-        animator.SetTrigger("gethit");
+        transform.forward = (Player.Instance.transform.position - transform.position).normalized;
+        if (Stat.Type == "Elite" || Stat.Type == "Boss")
+        {
+            if(color == Color.red) animator.SetTrigger($"gethit{1}");
+            else animator.SetTrigger($"gethit{2}");
+        }
+        else
+            animator.SetTrigger("gethit");
         
         AudioManager.Instance.PlayGetHit(transform);
 
@@ -123,5 +131,21 @@ public class Enemy : MonoBehaviour
             PopUpUI.Instance.ShowFloorClearedPopUp();
         }
         Destroy(gameObject);
+    }
+
+    private void ShowWeapon()
+    {
+        if (Weapon != null)
+        {
+            Weapon.SetActive(true);
+        }
+    }
+
+    private void HideWeapon()
+    {
+        if (Weapon != null)
+        {
+            Weapon.SetActive(false);
+        }
     }
 }
