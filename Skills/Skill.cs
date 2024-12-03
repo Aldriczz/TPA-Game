@@ -79,11 +79,14 @@ public abstract class ActiveSkill : Skill
 {
     public bool isToggle;
     public float DamageBoost;
+    public string ActiveSkillType;
+    public GameObject ProjectileFX;
 
-    protected ActiveSkill(Image _skillImage, GameObject _currentCooldownText, GameObject _skillEffect) : base(_skillImage, _currentCooldownText, _skillEffect)
+    protected ActiveSkill(Image _skillImage, GameObject _currentCooldownText, GameObject _skillEffect, GameObject _projectileFX) : base(_skillImage, _currentCooldownText, _skillEffect)
     {
         SkillCooldown = _skillImage;
         CurrentCooldownText = _currentCooldownText;
+        ProjectileFX = _projectileFX;
     }
     
     public abstract int SkillDamage(int PlayerDamage);

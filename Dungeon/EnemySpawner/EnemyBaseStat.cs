@@ -25,14 +25,14 @@ public class CommonEnemy : EnemyBaseStat
     public CommonEnemy(int multiplier)
     {
         Type ="Common";
-        MaxHealth = 10 * multiplier + Random.Range(0, multiplier) * 2;
+        MaxHealth = 15 * multiplier + Random.Range(0, multiplier) * 2;
         CurrentHealth = MaxHealth;
         Damage = 2 * multiplier;
         CritChance = 1 + multiplier / 2;
         CritDamage = 120 + multiplier;
         Defense = 5 * multiplier;
-        ExpDrop = Random.Range(1, 5);
-        ZenDrop = Random.Range(3, 9) + 2 * multiplier;
+        ExpDrop = Random.Range(5, 10);
+        ZenDrop = Random.Range(5, 14) + 3 * multiplier;
         DefenseImpact = 150;
     }
 }
@@ -42,14 +42,14 @@ public class MediumEnemy : EnemyBaseStat
     public MediumEnemy(int multiplier)
     {
         Type ="Medium";
-        MaxHealth = 15 * multiplier + Random.Range(0, multiplier) * 2;
+        MaxHealth = 20 * multiplier + Random.Range(0, multiplier) * 2;
         CurrentHealth = MaxHealth;
         Damage = 3 * multiplier;
         CritChance = 3 + multiplier / 2;
         CritDamage = 130 + multiplier;
         Defense = 10 * multiplier;
-        ExpDrop = Random.Range(6, 12);
-        ZenDrop = Random.Range(9, 18) + 2 * multiplier;
+        ExpDrop = Random.Range(10, 30);
+        ZenDrop = Random.Range(15, 30) + 3 * multiplier;
         DefenseImpact = 100;
     }
 }
@@ -59,14 +59,14 @@ public class EliteEnemy : EnemyBaseStat
     public EliteEnemy(int multiplier)
     {
         Type ="Elite";
-        MaxHealth = 25 * multiplier + Random.Range(0, multiplier) * 2;
+        MaxHealth = 30 * multiplier + Random.Range(0, multiplier) * 2;
         CurrentHealth = MaxHealth;
         Damage = 5 * multiplier;
         CritChance = 5 + multiplier / 2;
         CritDamage = 150 + multiplier;
         Defense = 20 * multiplier;
-        ExpDrop = Random.Range(12, 18);
-        ZenDrop = Random.Range(18, 31) + 2 * multiplier;
+        ExpDrop = Random.Range(30, 60);
+        ZenDrop = Random.Range(31, 50) + 3 * multiplier;
         DefenseImpact = 150;
     }
 }
@@ -76,9 +76,9 @@ public class BossEnemy : EnemyBaseStat
     public BossEnemy()
     {
         Type ="Boss";
-        MaxHealth = 100;
+        MaxHealth = 10000;
         CurrentHealth = MaxHealth;
-        Damage = 5;
+        Damage = 1000;
         CritChance = 50;
         CritDamage = 150;
         Defense = 200;

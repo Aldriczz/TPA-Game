@@ -20,6 +20,9 @@ public class SkillSystem : MonoBehaviour
     [Header("Skill Effect")]
     public List<GameObject> SkillEffectList = new List<GameObject>();
     
+    [Header("Skill Projectile Effect")]
+    public List<GameObject> SkillProjectileEffectList = new List<GameObject>();
+    
     [Header("Toggle Skill Image")]
     public List<Image> SkillToggleImageList = new List<Image>();
     
@@ -42,11 +45,12 @@ public class SkillSystem : MonoBehaviour
         ARCANE_STRIKE,
         RAGE,
         EQUINOX,
+        DIVINE_ARCANE,
     }
     private enum ActiveSkillIndex
     {
         ARCANE_STRIKE,
-        
+        DIVINE_ARCANE,
     }
 
     private enum PassiveSkillIndex
@@ -57,19 +61,13 @@ public class SkillSystem : MonoBehaviour
     
     private void Start()
     {   
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(this);
-        }
+        if (Instance == null) Instance = this; else Destroy(this);
 
         PlayerSkills.PlayerSkillsList = new List<Skill>();
-        AvailableSkills.Add(new ArcaneStrike(SkillCooldownList[(int)AllSkillIndex.ARCANE_STRIKE], CurrentCooldownTextList[(int)AllSkillIndex.ARCANE_STRIKE], SkillEffectList[(int)AllSkillIndex.ARCANE_STRIKE]));
+        AvailableSkills.Add(new ArcaneStrike(SkillCooldownList[(int)AllSkillIndex.ARCANE_STRIKE], CurrentCooldownTextList[(int)AllSkillIndex.ARCANE_STRIKE], SkillEffectList[(int)AllSkillIndex.ARCANE_STRIKE], null));
         AvailableSkills.Add(new Rage(SkillCooldownList[(int)AllSkillIndex.RAGE], CurrentCooldownTextList[(int)AllSkillIndex.RAGE], SkillEffectList[(int)AllSkillIndex.RAGE], SkillDurationGameObjectList[(int)PassiveSkillIndex.RAGE], SkillDurationTextList[(int)PassiveSkillIndex.RAGE]));
         AvailableSkills.Add(new Equinox(SkillCooldownList[(int)AllSkillIndex.EQUINOX], CurrentCooldownTextList[(int)AllSkillIndex.EQUINOX], SkillEffectList[(int)AllSkillIndex.EQUINOX], SkillDurationGameObjectList[(int)PassiveSkillIndex.EQUINOX], SkillDurationTextList[(int)PassiveSkillIndex.EQUINOX]));
+        AvailableSkills.Add(new DivineArcane(SkillCooldownList[(int)AllSkillIndex.DIVINE_ARCANE], CurrentCooldownTextList[(int)AllSkillIndex.DIVINE_ARCANE], SkillEffectList[(int)AllSkillIndex.DIVINE_ARCANE], SkillProjectileEffectList[0]));
      }
 
     private void Update()
@@ -143,6 +141,30 @@ public class SkillSystem : MonoBehaviour
                 passiveSkill.SetCanBeUsed(false);
                 passiveSkill.ActivateSkill();
                 SkillSlotController.Instance.UpdateCooldownUI();
+            }
+        }
+    }
+    
+    public void ActivateSkill4()
+    {
+        if (PlayerSkills.PlayerSkillsList.Count == 0) return;
+        if (PlayerSkills.PlayerSkillsList.Count - 1 < (int)AllSkillIndex.DIVINE_ARCANE) return;
+        if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.DIVINE_ARCANE].GetCanBeUsed() == false) return;
+
+        if (PlayerSkills.PlayerSkillsList[(int)AllSkillIndex.DIVINE_ARCANE] is ActiveSkill activeSkill)
+        {
+            if (!activeSkill.isToggle)
+            {
+                SkillEffectList[(int)AllSkillIndex.DIVINE_ARCANE].SetActive(true);
+                SkillToggleImageList[(int)ActiveSkillIndex.DIVINE_ARCANE].gameObject.SetActive(true);
+                activeSkill.isToggle = true;
+                // AudioManager.Instance.PlayArcaneStrikeToggle(Player.Instance.transform);
+            }
+            else
+            {
+                SkillEffectList[(int)AllSkillIndex.DIVINE_ARCANE].SetActive(false);
+                SkillToggleImageList[(int)ActiveSkillIndex.DIVINE_ARCANE].gameObject.SetActive(false);
+                activeSkill.isToggle = false;
             }
         }
     }

@@ -13,7 +13,8 @@ public class PlayerStateMachine : MonoBehaviour
     [HideInInspector] public IdleState idleState;
     [HideInInspector] public MovingState movingState;
      public VoidEventChannel SkillReduceCooldownEventChannel;
-     public GameObjectEventChannel SkillUseEventChannel;
+     public GameObjectEventChannel MeleeSkillUseEventChannel;
+     public GameObjectEventChannel RangeSkillUseEventChannel;
 
      private Player player;
      
@@ -49,8 +50,6 @@ public class PlayerStateMachine : MonoBehaviour
     {
         currentState?.PhysicsUpdate();
     }
-    
-    
 
     public void ChangeState(State newState)
     {

@@ -62,6 +62,7 @@ public class EnemyChaseState : EnemyState
                 enemy.animator.SetFloat("speed", 0f);
                 Attack();
             }
+            stateMachine.UpdateRangeSkillPositionEventChannel.RaiseVoidEvent();
         }
     }
 

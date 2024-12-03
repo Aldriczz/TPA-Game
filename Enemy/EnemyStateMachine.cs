@@ -19,7 +19,7 @@ public class EnemyStateMachine : MonoBehaviour
     public bool isMoving = false;
     public bool isAttacking = false;
     public bool isRealized = false;
-    public TurnChangeEventChannel turnChangeEventChannel;
+    public VoidEventChannel UpdateRangeSkillPositionEventChannel;
 
     private void Start()
     {

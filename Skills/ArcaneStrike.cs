@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ArcaneStrike : ActiveSkill
 {
-    public ArcaneStrike(Image _skillCooldown, GameObject _currentCooldownText, GameObject _skillEffect) : base(_skillCooldown, _currentCooldownText,  _skillEffect)
+    public ArcaneStrike(Image _skillCooldown, GameObject _currentCooldownText, GameObject _skillEffect, GameObject _projectileFX) : base(_skillCooldown, _currentCooldownText,  _skillEffect, _projectileFX)
     {
         Name = "Arcane Strike";
         Description = "Arcane Strike - A Powerful lightning strike ignoring enemy's defense dealing 30% attack";
@@ -14,6 +14,7 @@ public class ArcaneStrike : ActiveSkill
         CurrentCooldown = 0;
         CanBeUsed = true;
         isToggle = false;
+        ActiveSkillType = "Melee";
 
         DamageBoost = 0.3f;
     }    

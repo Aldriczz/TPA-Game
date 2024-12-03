@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     [HideInInspector] public List<Tile> resultMap;
     [HideInInspector] public LayerMask ClickableLayerMask;
     [HideInInspector] public CameraShake cameraShake;
+    
+    [SerializeField] private PlayerSkillsSO playerSkills;
 
     private InputControl inputControl;
         
@@ -31,7 +33,7 @@ public class Player : MonoBehaviour
     
     private RaycastHit hit;
 
-    private void Start()
+    private void Awake()
     {
         if (Instance == null)
         {
@@ -53,24 +55,31 @@ public class Player : MonoBehaviour
     }
     private void AssignInput()
     {
-        inputControl.Player.Move.performed += ctx => OnClickMove();
+        inputControl.Player.Move.performed += ctx => OnClickAction();
         inputControl.Player.Skill1.performed += ctx => SkillSystem.Instance.ActivateSkill1();
         inputControl.Player.Skill2.performed += ctx => SkillSystem.Instance.ActivateSkill2();
         inputControl.Player.Skill3.performed += ctx => SkillSystem.Instance.ActivateSkill3();
-        EnableInput();
+        inputControl.Player.Skill4.performed += ctx => SkillSystem.Instance.ActivateSkill4();
     }
     
     public void EnableInput()
     {
         inputControl.Enable();
     }
-
     public void DisableInput()
     {
-        inputControl.Player.Disable();
+        inputControl.Disable();
+    }
+    private void OnEnable()
+    {
+        inputControl.Enable();
+    }
+    private void OnDisable()
+    {
+        inputControl.Disable();
     }
 
-    private void OnClickMove()
+    private void OnClickAction()
     {
         if (isMoving)
         {
@@ -82,8 +91,17 @@ public class Player : MonoBehaviour
             {
                 DisableInput();
                 StartAttackAnimation();
+            }else if(hit.transform.tag == "Enemy" && Vector3.Distance(transform.position, hit.transform.position) > 1)
+            {
+                foreach(var skill in playerSkills.PlayerSkillsList)
+                {
+                    if (skill is ActiveSkill activeSkill)
+                        if (activeSkill.GetName() == "Divine Arcane")
+                        {
+                            GetComponent<PlayerStateMachine>().RangeSkillUseEventChannel.RaiseGameObjectEvent(hit.transform.gameObject);
+                        }
+                }
             }
-            
             else if (hit.collider.tag == "Tile")
             {
                 resultMap = HoverManager.Instance.path;
@@ -133,10 +151,9 @@ public class Player : MonoBehaviour
         var EnemyDefense = hit.transform.GetComponent<Enemy>().Stat.Defense;
         var RandomFactorDmg = Mathf.RoundToInt(Random.Range(-10f, 10f) * stats.Damage / 100f);
         
-        
         var randomCritNumber = Random.Range(0, 100);
         GetComponent<PlayerStateMachine>().SkillReduceCooldownEventChannel.RaiseVoidEvent();
-        GetComponent<PlayerStateMachine>().SkillUseEventChannel.RaiseGameObjectEvent(hit.transform.gameObject);
+        GetComponent<PlayerStateMachine>().MeleeSkillUseEventChannel.RaiseGameObjectEvent(hit.transform.gameObject);
 
         if (randomCritNumber < stats.CritChance)
         {

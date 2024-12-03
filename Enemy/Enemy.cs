@@ -23,11 +23,12 @@ public class Enemy : MonoBehaviour
     public VoidEventChannel EnemyNumberUpdateEventChannel;
 
     private FloatingText _damageText;
-    
+    private EnemyStateMachine enemyStateMachine;
 
     private float timePassed = 0f;
     private void Start()
     {
+        enemyStateMachine = GetComponent<EnemyStateMachine>();
         animator = GetComponent<Animator>();
         _damageText = transform.Find("Canvas/Bar/Damage Text").GetComponent<FloatingText>();
         moveSpeed = 3f;
@@ -89,6 +90,10 @@ public class Enemy : MonoBehaviour
 
     public void Gethit(int damage, Color color)
     {
+        if (enemyStateMachine.currentState != enemyStateMachine.enemyChaseState)
+        {
+            enemyStateMachine.ChangeState(enemyStateMachine.enemyChaseState);
+        }
         _damageText.ActivateDamageText(damage, color);
         
         Stat.CurrentHealth -= damage;
