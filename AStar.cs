@@ -12,8 +12,8 @@ public class AStar
     int[] moveY = { 1, 0, -1,  0 };
     public AStar()
     {
-        lengthMap = 70;
-        widthMap = 70;
+        lengthMap = DungeonGenerator.Instance.lengthMap;
+        widthMap = DungeonGenerator.Instance.lengthMap;
         tileListQueue = new List<Tile>();
     }
 

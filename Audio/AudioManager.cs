@@ -13,7 +13,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSourceSO AudioSO;
     
     private void Awake()
-    {
+    {    
         if (Instance == null)
         {
             Instance = this;

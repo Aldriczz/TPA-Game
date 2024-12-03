@@ -20,14 +20,14 @@ public class Enemy : MonoBehaviour
     public IntEventChannel ZenUpdateEventChannel;
     public VoidEventChannel EnemyNumberUpdateEventChannel;
 
-    private DamageText _damageText;
+    private FloatingText _damageText;
     
 
     private float timePassed = 0f;
     private void Start()
     {
         animator = GetComponent<Animator>();
-        _damageText = transform.Find("Canvas/Bar/Damage Text").GetComponent<DamageText>();
+        _damageText = transform.Find("Canvas/Bar/Damage Text").GetComponent<FloatingText>();
         moveSpeed = 3f;
         isAgro = false;
         HPBar.maxValue = Stat.MaxHealth;
@@ -51,14 +51,20 @@ public class Enemy : MonoBehaviour
     private void StartAttack()
     {
         var randomCritChance = Random.Range(0, 100);
+        var DefenseImpact = Player.Instance.stats.DefenseImpact;
+        var PlayerDefense = Player.Instance.stats.Defense;
+        var RandomFactorDmg = Mathf.RoundToInt(Random.Range(-10f, 10f) * Stat.Damage / 100f);
+        int Dmg;
         if (randomCritChance < Stat.CritChance)
         {
             AudioManager.Instance.PlaySwordCriticalSlash(transform);
-            Player.Instance.GetComponent<Damageable>().TakeDamage(Stat.Damage * Stat.CritDamage / 100, Color.red);
+            Dmg = Mathf.RoundToInt((float)((Stat.Damage + RandomFactorDmg) * Stat.CritDamage / 100f) *
+                                   (1f - (float)PlayerDefense / (float)(PlayerDefense + DefenseImpact)));
+            Player.Instance.GetComponent<Damageable>().TakeDamage(Dmg, Color.red);
+            StartCoroutine(Player.Instance.cameraShake.Shake(0.1f, 0.07f));
         }
         else
         {
-            Debug.Log(Stat.Type);
             switch (Stat.Type)
             {
                 case "Common":
@@ -68,7 +74,8 @@ public class Enemy : MonoBehaviour
                     AudioManager.Instance.PlaySwordSlash(transform);
                     break;
             }
-            Player.Instance.GetComponent<Damageable>().TakeDamage(Stat.Damage, Color.white);
+            Dmg = Mathf.RoundToInt((float)(Stat.Damage + RandomFactorDmg) * (1f - (float)PlayerDefense / (float)(PlayerDefense + DefenseImpact)));
+            Player.Instance.GetComponent<Damageable>().TakeDamage(Dmg, Color.white);
         }
     }
 
@@ -80,7 +87,7 @@ public class Enemy : MonoBehaviour
 
     public void Gethit(int damage, Color color)
     {
-        _damageText.Activate(damage, color);
+        _damageText.ActivateDamageText(damage, color);
         
         Stat.CurrentHealth -= damage;
         HPBar.value = Stat.CurrentHealth;

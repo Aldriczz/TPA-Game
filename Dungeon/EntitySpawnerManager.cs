@@ -54,16 +54,24 @@ public class EntitySpawnerManager : MonoBehaviour
         dungeonGenerator = DungeonGenerator.Instance;
         lengthMap = dungeonGenerator.lengthMap;
         widthMap = dungeonGenerator.widthMap;
-        GenerateDecorations();
-        SpawnEnemies();
-        PutPlayer(Player);
+        InitEntity();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void InitEntity()
     {
-        
-    } 
+        if (PlayerStats.CurrentLevel == 0)
+        {
+            GenerateDecorations();
+            SpawnBoss();
+            PutPlayer(Player);
+        }
+        else
+        {
+            GenerateDecorations();
+            SpawnEnemies();
+            PutPlayer(Player);
+        }
+    }
     
     private void PutPlayer(GameObject player)
     {
@@ -81,13 +89,13 @@ public class EntitySpawnerManager : MonoBehaviour
     
     private void GenerateDecorations()
     {
-        for (int i = 0; i < lengthMap; i++)
+        for (int i = 1; i < lengthMap - 1; i++)
         {
-            for (int j = 0; j < widthMap; j++)
+            for (int j = 1; j < widthMap - 1; j++)
             {
                 int r = Random.Range(0, 100);
                 int randomRotation = Random.Range(0, 360);
-                int fourRotationMultiplication = Random.Range(0, 5);
+                int fourRotationMultiplication = Random.Range(0, 4);
                 if (dungeonGenerator.map[i, j] == ' ' && dungeonGenerator.map[i - 1, j] != '-' && dungeonGenerator.map[i + 1, j] != '-' && dungeonGenerator.map[i, j - 1] != '-' && dungeonGenerator.map[i, j + 1] != '-' 
                     && dungeonGenerator.map[i - 1, j] != '.' && dungeonGenerator.map[i + 1, j] != '.' && dungeonGenerator.map[i, j - 1] != '.' && dungeonGenerator.map[i, j + 1] != '.'
                     && dungeonGenerator.map[i - 1, j + 1] != '.' && dungeonGenerator.map[i + 1, j + 1] != '.' && dungeonGenerator.map[i - 1, j - 1] != '.' && dungeonGenerator.map[i + 1, j - 1] != '.')
@@ -117,25 +125,26 @@ public class EntitySpawnerManager : MonoBehaviour
                     }
                     else if (r >= 25 && r < 30)
                     {
-                        objectRotation = Quaternion.Euler(0, fourRotationMultiplication * 90, 0);
+                        objectRotation = Quaternion.Euler(0, Mathf.Abs(fourRotationMultiplication * 90), 0);
                         Instantiate(Resources.Load<GameObject>("Box"), new Vector3(i, 0.96f, j), objectRotation);
                         dungeonGenerator.map[i, j] = '.';
                         switch (fourRotationMultiplication)
                         {
                             case 0:
+                                if(dungeonGenerator.map[i - 1, j] != '#')
                                 dungeonGenerator.map[i - 1, j] = '.';
                                 break;
                             case 1:
+                                if(dungeonGenerator.map[i, j + 1] != '#')
                                 dungeonGenerator.map[i, j + 1] = '.';
                                 break;
                             case 2:
+                                if(dungeonGenerator.map[i + 1, j] != '#')
                                 dungeonGenerator.map[i + 1, j] = '.';
                                 break;
                             case 3:
+                                if(dungeonGenerator.map[i, j - 1] != '#')
                                 dungeonGenerator.map[i, j - 1] = '.';
-                                break;
-                            case 4:
-                                dungeonGenerator.map[i, j + 1] = '.';
                                 break;
                         }
                     }
@@ -151,19 +160,15 @@ public class EntitySpawnerManager : MonoBehaviour
         var RoomCounter = 0;
         var numberOfEnemies = 5 + PlayerStats.CurrentLevel / 3 +  Random.Range(0, 10);
         var EnemyPerRoom = Mathf.Round((float) numberOfEnemies / (float) RoomNumber);
-        Debug.Log(EnemyPerRoom);
         var EnemyCounterPerRoom = 0;
 
-        int x;
-        int y;
-        int rarity;
 
         while (numberOfEnemies > 0)
         {
-            x = Random.Range((int)RoomList[RoomCounter].leftCorner.x, (int)RoomList[RoomCounter].leftCorner.x + RoomList[RoomCounter].length - 1);
-            y = Random.Range((int)RoomList[RoomCounter].leftCorner.y, (int)RoomList[RoomCounter].leftCorner.y + RoomList[RoomCounter].width - 1);
+            var x = Random.Range((int)RoomList[RoomCounter].leftCorner.x, (int)RoomList[RoomCounter].leftCorner.x + RoomList[RoomCounter].length - 1);
+            var y = Random.Range((int)RoomList[RoomCounter].leftCorner.y, (int)RoomList[RoomCounter].leftCorner.y + RoomList[RoomCounter].width - 1);
 
-            rarity = Random.Range(0, 100);
+            var rarity = Random.Range(0, 100);
 
             if (dungeonGenerator.map[x, y] == ' ')
             {
@@ -211,6 +216,32 @@ public class EntitySpawnerManager : MonoBehaviour
                 }
             }
                 
+        }
+    }
+
+    private void SpawnBoss()
+    {
+        var isSpawned = false;
+
+        while (!isSpawned)
+        {
+            GameObject boss;
+            float angle = Random.Range(0, 360);
+            Quaternion objectRotation = Quaternion.Euler(0, angle, 0);
+            var x = Random.Range(0, lengthMap);
+            var y = Random.Range(0, widthMap);
+            
+            if (dungeonGenerator.map[x, y] == ' ')
+            {
+                boss = Instantiate(Resources.Load<GameObject>("Entity/Boss"), new Vector3(x, 0.75f, y), objectRotation);
+                boss.GetComponent<Enemy>().Stat = EnemyFactory.CreateEnemyStat("Boss", PlayerStats.CurrentLevel);
+                
+                enemyList.Add(boss.GetComponent<EnemyStateMachine>());
+                boss.GetComponentInChildren<Text>().text = EnemyNames[Random.Range(0, 23)];
+                dungeonGenerator.map[x, y] = '#';
+                boss.transform.tag = "Enemy";
+                isSpawned = true;
+            }
         }
     }
 }

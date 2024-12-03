@@ -10,6 +10,8 @@ public class UpgradeableController : MonoBehaviour
     [SerializeField] private UpgradeableSO UpgradeableInfo;
     [SerializeField] private Text ZenCurrency;
     [SerializeField] private Text AlertCurrencyText;
+    [SerializeField] private Transform Upgradeable;
+    [SerializeField] private Transform Description;
     
     [Header("Event Channel")]
     public IntEventChannel UpgradeHealthEventChannel;
@@ -63,9 +65,9 @@ public class UpgradeableController : MonoBehaviour
         ZenUpdateMinus(UpgradeableInfo.HealthUPCost);
         
         UpgradeableInfo.HealthUpgrade();
-        transform.Find("Upgradeable/Health Upgrade/Health Lvl").GetComponent<Text>().text = $"{UpgradeableInfo.HealthUP} / 45";
-        transform.Find("Description/Health Desc/Current Stat Text").GetComponent<Text>().text = $"Current: {PlayerStats.MaxHealth} HP";
-        transform.Find("Description/Health Desc/Cost Upgrade").GetComponent<Text>().text = $"{UpgradeableInfo.HealthUPCost} To Upgrade";
+        Upgradeable.Find("Health Upgrade/Health Lvl").GetComponent<Text>().text = $"{UpgradeableInfo.HealthUP} / 45";
+        Description.Find("Health Desc/Current Stat Text").GetComponent<Text>().text = $"Current: {PlayerStats.MaxHealth} HP";
+        Description.Find("Health Desc/Cost Upgrade").GetComponent<Text>().text = $"{UpgradeableInfo.HealthUPCost} To Upgrade";
         AudioManager.Instance.PlayUpgradeSound();
 
     }
@@ -89,9 +91,9 @@ public class UpgradeableController : MonoBehaviour
         ZenUpdateMinus(UpgradeableInfo.AttackUPCost);
         
         UpgradeableInfo.AttackUpgrade();
-        transform.Find("Upgradeable/Attack Upgrade/Attack Lvl").GetComponent<Text>().text = $"{UpgradeableInfo.AttackUP} / 45";
-        transform.Find("Description/Attack Desc/Current Stat Text").GetComponent<Text>().text = $"Current: {PlayerStats.Damage} ATK";
-        transform.Find("Description/Attack Desc/Cost Upgrade").GetComponent<Text>().text = $"{UpgradeableInfo.AttackUPCost} To Upgrade";
+        Upgradeable.Find("Attack Upgrade/Attack Lvl").GetComponent<Text>().text = $"{UpgradeableInfo.AttackUP} / 45";
+        Description.Find("Attack Desc/Current Stat Text").GetComponent<Text>().text = $"Current: {PlayerStats.Damage} ATK";
+        Description.Find("Attack Desc/Cost Upgrade").GetComponent<Text>().text = $"{UpgradeableInfo.AttackUPCost} To Upgrade";
         AudioManager.Instance.PlayUpgradeSound();
 
     }
@@ -114,9 +116,9 @@ public class UpgradeableController : MonoBehaviour
         ZenUpdateMinus(UpgradeableInfo.DefenseUPCost);
         
         UpgradeableInfo.DefenseUpgrade();
-        transform.Find("Upgradeable/Defense Upgrade/Defense Lvl").GetComponent<Text>().text = $"{UpgradeableInfo.DefenseUP} / 45";
-        transform.Find("Description/Defense Desc/Current Stat Text").GetComponent<Text>().text = $"Current: {PlayerStats.Defense} DEF";
-        transform.Find("Description/Defense Desc/Cost Upgrade").GetComponent<Text>().text = $"{UpgradeableInfo.DefenseUPCost} To Upgrade";
+        Upgradeable.Find("Defense Upgrade/Defense Lvl").GetComponent<Text>().text = $"{UpgradeableInfo.DefenseUP} / 45";
+        Description.Find("Defense Desc/Current Stat Text").GetComponent<Text>().text = $"Current: {PlayerStats.Defense} DEF";
+        Description.Find("Defense Desc/Cost Upgrade").GetComponent<Text>().text = $"{UpgradeableInfo.DefenseUPCost} To Upgrade";
         AudioManager.Instance.PlayUpgradeSound();
     }
     
@@ -139,9 +141,9 @@ public class UpgradeableController : MonoBehaviour
         ZenUpdateMinus(UpgradeableInfo.LuckUPCost);
         
         UpgradeableInfo.LuckUpgrade();
-        transform.Find("Upgradeable/Luck Upgrade/Luck Lvl").GetComponent<Text>().text = $"{UpgradeableInfo.LuckUP} / 45";
-        transform.Find("Description/Luck Desc/Current Stat Text").GetComponent<Text>().text = $"Current: {PlayerStats.CritChance}% Rate";
-        transform.Find("Description/Luck Desc/Cost Upgrade").GetComponent<Text>().text = $"{UpgradeableInfo.LuckUPCost} To Upgrade";
+        Upgradeable.Find("Luck Upgrade/Luck Lvl").GetComponent<Text>().text = $"{UpgradeableInfo.LuckUP} / 45";
+        Description.Find("Luck Desc/Current Stat Text").GetComponent<Text>().text = $"Current: {PlayerStats.CritChance}% Rate";
+        Description.Find("Luck Desc/Cost Upgrade").GetComponent<Text>().text = $"{UpgradeableInfo.LuckUPCost} To Upgrade";
         AudioManager.Instance.PlayUpgradeSound();
     }
     
@@ -164,9 +166,9 @@ public class UpgradeableController : MonoBehaviour
         ZenUpdateMinus(UpgradeableInfo.CritDmgUPCost);
         
         UpgradeableInfo.CritDmgUpgrade();
-        transform.Find("Upgradeable/Crit Dmg Upgrade/Crit Dmg Lvl").GetComponent<Text>().text = $"{UpgradeableInfo.CritDmgUp} / 45";
-        transform.Find("Description/Crit Dmg Desc/Current Stat Text").GetComponent<Text>().text = $"Current: {PlayerStats.CritDamage}% Damage";
-        transform.Find("Description/Crit Dmg Desc/Cost Upgrade").GetComponent<Text>().text = $"{UpgradeableInfo.CritDmgUPCost} To Upgrade";
+        Upgradeable.Find("Crit Dmg Upgrade/Crit Dmg Lvl").GetComponent<Text>().text = $"{UpgradeableInfo.CritDmgUp} / 45";
+        Description.Find("Crit Dmg Desc/Current Stat Text").GetComponent<Text>().text = $"Current: {PlayerStats.CritDamage}% Damage";
+        Description.Find("Crit Dmg Desc/Cost Upgrade").GetComponent<Text>().text = $"{UpgradeableInfo.CritDmgUPCost} To Upgrade";
         AudioManager.Instance.PlayUpgradeSound();
     }
 

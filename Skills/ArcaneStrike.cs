@@ -8,7 +8,7 @@ public class ArcaneStrike : ActiveSkill
     public ArcaneStrike(Image _skillCooldown, GameObject _currentCooldownText, GameObject _skillEffect) : base(_skillCooldown, _currentCooldownText,  _skillEffect)
     {
         Name = "Arcane Strike";
-        Description = "A Powerful True Damage Slash";
+        Description = "Arcane Strike - A Powerful lightning strike ignoring enemy's defense dealing 30% attack";
         LevelRequired = 3;
         Cooldown = 4;
         CurrentCooldown = 0;

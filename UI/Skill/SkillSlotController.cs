@@ -34,7 +34,6 @@ public class SkillSlotController : MonoBehaviour
         SkillCooldownEventChannel.OnRaiseVoidEvent -= UpdateCooldownUI;
         SkillUsedEventChannel.OnRaiseGameObjectEvent -= UseSkill;
     }
-
     private void ReduceCooldown()
     {
         if (PlayerSkills.PlayerSkillsList.Count == 0) return;
@@ -82,13 +81,14 @@ public class SkillSlotController : MonoBehaviour
             if (skill is ActiveSkill activeSkill && activeSkill.GetCanBeUsed() == true && activeSkill.isToggle == true)
             {
                 AudioManager.Instance.PlayArcaneStrikeImpact(Player.Instance.transform);
-                enemy.transform.Find($"Canvas/Bar/{skill.GetName() + " Damage Text"}").GetComponent<DamageText>().Activate(activeSkill.SkillDamage(PlayerStats.Damage), Color.blue);
+                enemy.transform.Find($"Canvas/Bar/{skill.GetName() + " Damage Text"}").GetComponent<FloatingText>().ActivateDamageText(activeSkill.SkillDamage(PlayerStats.Damage), Color.blue);
                 enemy.transform.GetComponent<Enemy>().Stat.CurrentHealth -= activeSkill.SkillDamage(PlayerStats.Damage);
                 activeSkill.isToggle = false;
                 SkillSystem.Instance.SkillToggleImageList[i].gameObject.SetActive(false);
                 SkillSystem.Instance.SkillEffectList[i].SetActive(false);
                 activeSkill.SetCanBeUsed(false);
                 UpdateCooldownUI();
+                StartCoroutine(Player.Instance.cameraShake.Shake(0.3f, 0.01f));
             }
         }
     }   

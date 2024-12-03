@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Damageable : MonoBehaviour
 {
-    private DamageText damageText; 
+    private FloatingText damageText; 
         
     public PlayerStatsSO PlayerStats;
     public IntEventChannel SetupHealthBarEvent;
@@ -16,13 +16,13 @@ public class Damageable : MonoBehaviour
     {
         SetupHealthBarEvent.RaiseIntEvent(PlayerStats.MaxHealth);
         UpdateHealthBarEvent.RaiseIntEvent(PlayerStats.CurrentHealth);
-        damageText = transform.Find("PlayerTextCanvas/Bar/Damage Text").GetComponent<DamageText>();
+        damageText = transform.Find("PlayerTextCanvas/Bar/Floating Text").GetComponent<FloatingText>();
     }
 
     public void TakeDamage(int damage, Color color)
     {
         AudioManager.Instance.PlayGetHit(transform);
-        damageText.Activate(damage, color);
+        damageText.ActivateDamageText(damage, color);
         Player.Instance.animator.SetTrigger("gethit");
         PlayerStats.CurrentHealth -= damage;
         UpdateHealthBarEvent.RaiseIntEvent(PlayerStats.CurrentHealth);

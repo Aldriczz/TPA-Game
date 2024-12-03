@@ -27,9 +27,16 @@ public class SkillSystem : MonoBehaviour
     public List<GameObject> SkillDurationTextList = new List<GameObject>();
     public List<GameObject> SkillDurationGameObjectList = new List<GameObject>();
     
+    [Header("Locked Image")]
+    public List<GameObject> LockedSkillImageList = new List<GameObject>();
+    
+    [Header("Skill Description")]
+    public List<Text> SkillsDescription = new List<Text>();
+    
     [Header("Event Channel")]
     public VoidEventChannel SkillCooldownEventChannel;
 
+    private int SkillCounterIndex = 0;
     private enum AllSkillIndex
     {
         ARCANE_STRIKE,
@@ -64,12 +71,15 @@ public class SkillSystem : MonoBehaviour
 
     private void Update()
     {
-        for (var i = 0; i < AvailableSkills.Count; i++)
+        for (var i = SkillCounterIndex; i < AvailableSkills.Count; i++)
         {
             if (PlayerStats.Level >= AvailableSkills[i].GetLevelRequired())
             {
                 PlayerSkills.PlayerSkillsList.Add(AvailableSkills[i]);
-                AvailableSkills.RemoveAt(i);
+                SkillCooldownEventChannel.RaiseVoidEvent();
+                LockedSkillImageList[i].SetActive(false);
+                SkillsDescription[i].text = AvailableSkills[i].GetDescription();
+                SkillCounterIndex++;
             }
         }
     }

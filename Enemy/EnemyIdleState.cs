@@ -38,20 +38,24 @@ public class EnemyIdleState : EnemyState
 
         if (Vector3.Distance(playerPos, enemyPos) <= 6)
         {
-                Player.Instance.isClickedWhileMoving = true;
-                
-                if (!playerInSight)
-                {
-                    stateMachine.ChangeState(stateMachine.enemyAlertState);
-                }
-                else
-                {
-                    stateMachine.ChangeState(stateMachine.enemyChaseState);
-                }
+            Player.Instance.isClickedWhileMoving = true;
+
+            if (!playerInSight)
+            {
+                stateMachine.ChangeState(stateMachine.enemyAlertState);
+            }
         }
         else
         {
             stateMachine.ChangeState(stateMachine.enemyIdleState);
+        }
+        
+        if (Physics.Raycast(enemyPos, direction, out hit, 6f, stateMachine.layerMask))
+        {
+            if (hit.collider.tag == "Player")
+            {
+                stateMachine.ChangeState(stateMachine.enemyChaseState);
+            }
         }
     }
 

@@ -16,7 +16,7 @@ public class Rage : PassiveSkill
     public Rage(Image _skillCooldown, GameObject _currentCooldownText, GameObject _skillEffect, GameObject _buffDurationImage, GameObject _currentBuffDurationText) : base(_skillCooldown, _currentCooldownText, _skillEffect, _buffDurationImage, _currentBuffDurationText)
     {
         Name = "Rage";
-        Description = "Buff Attack and Crit Chance by 20%, But reduces defense by 30%";
+        Description = "Rage - THe rage of arcane, increase 20% damage and crit chance while reducing defense by 30%";
         LevelRequired = 5;
         Cooldown = 9;
         CurrentCooldown = 0;

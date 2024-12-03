@@ -60,5 +60,6 @@ public class PauseUI : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
         MainMenuUI.SetActive(true);
         UpgradeMenuUI.SetActive(false);
+        SaveDataController.Instance.SaveData();
     }
 }

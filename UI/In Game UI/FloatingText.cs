@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DamageText : MonoBehaviour
+public class FloatingText : MonoBehaviour
 {
     public Text text;
     private Vector3 StartingPosition;
@@ -13,13 +13,26 @@ public class DamageText : MonoBehaviour
     private float moveSpeed = 0.5f;
     private float timer;
 
-    public void Activate(int damage, Color color)
+    public void ActivateDamageText(int damage, Color color)
     {
         timer = lifetime;
         text.color = color;
         text.text = $"-{damage}";
         gameObject.SetActive(true);
         StartingPosition = transform.position;
+        
+        if (Color.red == color) text.fontSize = 88;
+        else text.fontSize = 68;
+    }
+    
+    public void ActivateLevelUp()
+    {
+        timer = lifetime;
+        text.color = Color.yellow;
+        text.text = "Level Up";
+        gameObject.SetActive(true);
+        StartingPosition = transform.position;
+        text.fontSize = 44;
     }
 
     void Update()

@@ -9,38 +9,63 @@ public class DungeonGenerator : MonoBehaviour
 {
     public static DungeonGenerator Instance;
 
+    [SerializeField] private PlayerStatsSO PlayerStats;
     [HideInInspector] public char[,] map; 
-    private Tile[,] tileMap;
     [HideInInspector] public GameObject[,] tileGameObjectsMap;
     [HideInInspector] public List<Room> roomList;
+    private Tile[,] tileMap;
 
-    [HideInInspector]
-    public int widthMap;
-    [HideInInspector]
-    public int lengthMap;
+    [HideInInspector] public int widthMap;
+    [HideInInspector] public int lengthMap;
     private void Start()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        widthMap = 70;
-        lengthMap = 70;
+        if (Instance == null) Instance = this; else Destroy(gameObject);
+        
+        roomList = new List<Room>();
+
+        StartCreateMap();
+    }
+
+    private void StartCreateMap()
+    {
+        if (PlayerStats.CurrentLevel == 0) CreateBossMap();
+        else CreateNormalMap();
+    }
+
+    private void CreateBossMap()
+    {
+        widthMap = 20;
+        lengthMap = 20;
+        
         map = new char[widthMap, lengthMap];
         tileMap = new Tile[widthMap, lengthMap];
         tileGameObjectsMap = new GameObject[widthMap, lengthMap];
-        roomList = new List<Room>();
+        
+        for (var i = 0; i < widthMap; i++)
+        {
+            for (var j = 0; j < lengthMap; j++)
+            {
+                map[i, j] = ' '; 
+                Instantiate(Resources.Load<GameObject>("Tile"), new Vector3(i, 0, j), Quaternion.identity);
+            }
+        }
+        GenerateMap();
+    }   
+
+    private void CreateNormalMap()
+    {
+        widthMap = 70;
+        lengthMap = 70;
+        
+        map = new char[widthMap, lengthMap];
+        tileMap = new Tile[widthMap, lengthMap];
+        tileGameObjectsMap = new GameObject[widthMap, lengthMap];
         
         InitMap();
         RandomizeMap();
         
         ConnectRooms();
         GenerateMap();
-        
     }
 
     private void InitMap()
@@ -239,10 +264,6 @@ public class DungeonGenerator : MonoBehaviour
             else y--;
         }
     }
-    void Update()
-    {
-    }
-
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;

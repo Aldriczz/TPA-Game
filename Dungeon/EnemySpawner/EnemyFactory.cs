@@ -21,6 +21,9 @@ public class EnemyFactory : MonoBehaviour
             case "Elite":
                 return new EliteEnemy(curLvl);
                 break;
+            case "Boss":
+                return new BossEnemy();
+                break;
         }
         
         return null;

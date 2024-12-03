@@ -16,6 +16,8 @@ public class ExpManager : MonoBehaviour
     public IntEventChannel UpdateExpBarEventChannel;
     public VoidEventChannel LevelUpdateEventChannel;
     
+    [SerializeField] private FloatingText playerFloatingText;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -44,10 +46,12 @@ public class ExpManager : MonoBehaviour
 
     private void LevelUp()
     {
+        playerFloatingText.ActivateLevelUp();
         PlayerStats.Level++;
         PlayerStats.CurrentExperience = PlayerStats.CurrentExperience - PlayerStats.MaxExperience;
         PlayerStats.MaxExperience = (int)expCurve.Evaluate(PlayerStats.Level);
         SetupExpBarEventChannel.RaiseIntEvent(PlayerStats.MaxExperience);
         LevelUpdateEventChannel.RaiseVoidEvent();
+        PlayerStats.LevelUp();
     }
 }

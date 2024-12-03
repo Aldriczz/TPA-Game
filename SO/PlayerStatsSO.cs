@@ -11,6 +11,7 @@ public class PlayerStatsSO : ScriptableObject
     public int CritChance;
     public int CritDamage;
     public int Defense;
+    public int DefenseImpact;
     public int CurrentExperience;
     public int MaxExperience;
     public int Level;
@@ -32,11 +33,19 @@ public class PlayerStatsSO : ScriptableObject
         CritChance = 5;
         CritDamage = 150;
         Defense = 5;
+        DefenseImpact = 100;
         CurrentExperience = 0;
         MaxExperience = 0;
         Level = 1;
         UnlockLevel = 1;
         CurrentLevel = 1;
         Zen = 0;
+    }
+
+    public void LevelUp()
+    {
+        MaxHealth = MaxHealth + MaxHealth * 5 / 100;
+        Damage = Damage + Damage * 5 / 100;
+        Defense = Defense + Defense * 5 / 100;
     }
 }

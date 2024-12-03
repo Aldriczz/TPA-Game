@@ -8,16 +8,19 @@ public class Player : MonoBehaviour
 {
  
     public static Player Instance { get; private set; } 
+     
+    [SerializeField] private Transform cam;
     
     [HideInInspector] public Animator animator;
     [HideInInspector] public List<Tile> resultMap;
     [HideInInspector] public LayerMask ClickableLayerMask;
+    [HideInInspector] public CameraShake cameraShake;
+
     private InputControl inputControl;
         
     public bool isMoving = false; 
     public bool isClickedWhileMoving = false;
     public float moveSpeed = 4f;
-    
     
     private float clipDuration;
     private float clipSpeed;
@@ -38,8 +41,9 @@ public class Player : MonoBehaviour
         {
             Destroy(gameObject);
         }
-            
+                                    
         inputControl = new InputControl();
+        cameraShake = cam.GetComponent<CameraShake>();
         AssignInput();
         
         ClickableLayerMask = LayerMask.GetMask("Enemy", "Ground");
@@ -47,12 +51,6 @@ public class Player : MonoBehaviour
         
         stats.CurrentHealth = stats.MaxHealth;
     }
-
-    private void Update()
-    {
-        
-    }
-
     private void AssignInput()
     {
         inputControl.Player.Move.performed += ctx => OnClickMove();
@@ -130,6 +128,12 @@ public class Player : MonoBehaviour
 
     private void StartAttack()
     {
+        int Dmg;
+        var DefenseImpact = hit.transform.GetComponent<Enemy>().Stat.DefenseImpact;
+        var EnemyDefense = hit.transform.GetComponent<Enemy>().Stat.Defense;
+        var RandomFactorDmg = Mathf.RoundToInt(Random.Range(-10f, 10f) * stats.Damage / 100f);
+        
+        
         var randomCritNumber = Random.Range(0, 100);
         GetComponent<PlayerStateMachine>().SkillReduceCooldownEventChannel.RaiseVoidEvent();
         GetComponent<PlayerStateMachine>().SkillUseEventChannel.RaiseGameObjectEvent(hit.transform.gameObject);
@@ -137,12 +141,15 @@ public class Player : MonoBehaviour
         if (randomCritNumber < stats.CritChance)
         {
             AudioManager.Instance.PlaySwordCriticalSlash(transform);    
-            hit.transform.GetComponent<Enemy>().Gethit(stats.Damage * stats.CritDamage / 100, Color.red);
+            Dmg = Mathf.RoundToInt((float)((stats.Damage + RandomFactorDmg) * stats.CritDamage / 100f) * (1f - (float)EnemyDefense / (float)(EnemyDefense + DefenseImpact)));
+            hit.transform.GetComponent<Enemy>().Gethit(Dmg, Color.red);
+            StartCoroutine(cameraShake.Shake(0.1f, 0.07f));
         }
         else
         {
             AudioManager.Instance.PlaySwordSlash(transform);
-            hit.transform.GetComponent<Enemy>().Gethit(stats.Damage, Color.white);
+            Dmg = Mathf.RoundToInt((float)(stats.Damage + RandomFactorDmg) * (1f - (float)EnemyDefense / (float)(EnemyDefense + DefenseImpact)));
+            hit.transform.GetComponent<Enemy>().Gethit(Dmg, Color.white);
         }
     }
 
