@@ -26,14 +26,14 @@ public class Damageable : MonoBehaviour
             if(skill.GetName() == "Equinox" && skill is PassiveSkill passiveSkill)
                 if (passiveSkill.isActive)
                 {
-                    AudioManager.Instance.PlayPunch(transform);
+                    AudioManager.Instance.PlayPunch();
                     damageText.ActivateDamageText(0, color);
                     passiveSkill.DeactivateSkill();
                     return;
                 }
         }
        
-        AudioManager.Instance.PlayGetHit(transform);
+        AudioManager.Instance.PlayGetHit();
         damageText.ActivateDamageText(damage, color);
         Player.Instance.animator.SetTrigger("gethit");
         PlayerStats.CurrentHealth -= damage;
@@ -41,7 +41,7 @@ public class Damageable : MonoBehaviour
         
         if (PlayerStats.CurrentHealth <= 0)
         {
-            AudioManager.Instance.PlayDied(transform);
+            AudioManager.Instance.PlayDied();
             Destroy(GetComponent<PlayerStateMachine>());
             GetComponent<Player>().animator.SetTrigger("die");
         }

@@ -56,7 +56,6 @@ public class SkillSlotController : MonoBehaviour
                     skill.SetCanBeUsed(true);
                 }
             }
-
             if (skill is PassiveSkill passiveSkill)
             {
                 passiveSkill.ReduceCurrentDuration();
@@ -95,7 +94,7 @@ public class SkillSlotController : MonoBehaviour
                 if (activeSkill.GetCanBeUsed() == true && activeSkill.isToggle == true &&
                     activeSkill.ActiveSkillType == "Melee")
                 {
-                    AudioManager.Instance.PlayArcaneStrikeImpact(Player.Instance.transform);
+                    AudioManager.Instance.PlayArcaneStrikeImpact();
                     enemy.transform.Find("Canvas/Bar/Skill Damage Text").GetComponent<FloatingText>()
                         .ActivateDamageText(activeSkill.SkillDamage(PlayerStats.Damage), Color.blue);
                     enemy.transform.GetComponent<Enemy>().Stat.CurrentHealth -=
@@ -192,6 +191,7 @@ public class SkillSlotController : MonoBehaviour
         for (var j = 0; j < 6; j++)
         {
             enemy.GetComponent<Enemy>().Gethit(damage, Color.yellow);
+            AudioManager.Instance.PlayDivineStrike();
             yield return new WaitForSeconds(0.6f);
         }
         HideRangeSkillFX();

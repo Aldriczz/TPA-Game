@@ -20,6 +20,8 @@ public class AudioSourceSO : ScriptableObject
     public List<AudioClip> Died = new List<AudioClip>();
     public AudioClip ArcaneSlashToggle;
     public AudioClip ArcaneSlashImpact;
+    public AudioClip BuffSound;
+    public AudioClip DivineArcane;
     public AudioClip AlertAudio;
     public AudioClip AgroAudio;
    

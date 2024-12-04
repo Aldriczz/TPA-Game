@@ -36,7 +36,7 @@ public class MovingState : State
         foreach (Tile targetTile in path)
         {
             Vector3 targetPosition = new Vector3(targetTile.x, 0.75f, targetTile.y);
-            AudioManager.Instance.PlayFootStep(player.transform);
+            AudioManager.Instance.PlayFootStep();
 
             while (Vector3.Distance(stateMachine.transform.position, targetPosition) > 0.01f)
             {

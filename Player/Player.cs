@@ -30,6 +30,8 @@ public class Player : MonoBehaviour
     public PlayerStatsSO stats;
 
     public GameObject Sword;
+    public GameObject LeatherArmor;
+    public GameObject PlateArmor;
     
     private RaycastHit hit;
 
@@ -77,6 +79,19 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         inputControl.Disable();
+    }
+
+    private void Start()
+    {
+        if (stats.Defense >= 10)
+        {
+            LeatherArmor.SetActive(true);
+        }
+
+        if (stats.Defense >= 25)
+        {
+            PlateArmor.SetActive(true);
+        }
     }
 
     private void OnClickAction()
@@ -157,14 +172,14 @@ public class Player : MonoBehaviour
 
         if (randomCritNumber < stats.CritChance)
         {
-            AudioManager.Instance.PlaySwordCriticalSlash(transform);    
+            AudioManager.Instance.PlaySwordCriticalSlash();    
             Dmg = Mathf.RoundToInt((float)((stats.Damage + RandomFactorDmg) * stats.CritDamage / 100f) * (1f - (float)EnemyDefense / (float)(EnemyDefense + DefenseImpact)));
             hit.transform.GetComponent<Enemy>().Gethit(Dmg, Color.red);
             StartCoroutine(cameraShake.Shake(0.1f, 0.07f));
         }
         else
         {
-            AudioManager.Instance.PlaySwordSlash(transform);
+            AudioManager.Instance.PlaySwordSlash();
             Dmg = Mathf.RoundToInt((float)(stats.Damage + RandomFactorDmg) * (1f - (float)EnemyDefense / (float)(EnemyDefense + DefenseImpact)));
             hit.transform.GetComponent<Enemy>().Gethit(Dmg, Color.white);
         }

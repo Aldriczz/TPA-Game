@@ -6,10 +6,11 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
-    [SerializeField] private AudioSource SoundFXObject;
+    [SerializeField] private AudioSource SkillFXSource;
     [SerializeField] private AudioSource BackGroundMusicSource;
     [SerializeField] private AudioSource ButtonMusicSource;
     [SerializeField] private AudioSource OtherSoundFXSource;
+    [SerializeField] private AudioSource CombatSoundFXSource;
     [SerializeField] private AudioSourceSO AudioSO;
     
     private void Awake()
@@ -80,96 +81,85 @@ public class AudioManager : MonoBehaviour
         OtherSoundFXSource.Play();
     }
     
-
-    public void PlayPunch(Transform spawnPosition)
+    public void PlayPunch()
     {
         int random = Random.Range(0, 2);
         
-        AudioSource audioSource = Instantiate(SoundFXObject, spawnPosition);
-        audioSource.clip = AudioSO.Punch[random];
-        audioSource.Play();
-        Destroy(audioSource.gameObject, audioSource.clip.length);
+        CombatSoundFXSource.clip = AudioSO.Punch[random];
+        CombatSoundFXSource.Play();
     }
-    public void PlaySwordSlash(Transform spawnPosition)
+    public void PlaySwordSlash()
     {
         int random = Random.Range(0, 3);
         
-        AudioSource audioSource = Instantiate(SoundFXObject, spawnPosition);
-        audioSource.clip = AudioSO.SwordSlash[random];
-        audioSource.Play();
-        Destroy(audioSource.gameObject, audioSource.clip.length);
+        CombatSoundFXSource.clip = AudioSO.SwordSlash[random];
+        CombatSoundFXSource.Play();
     }
 
-    public void PlaySwordCriticalSlash(Transform spawnPosition)
+    public void PlaySwordCriticalSlash()
     {
         int random = Random.Range(0, 3);
         
-        AudioSource audioSource = Instantiate(SoundFXObject, spawnPosition);
-        audioSource.clip = AudioSO.SwordCriticalSlash[random];
-        audioSource.Play();
-        Destroy(audioSource.gameObject, audioSource.clip.length);
+        CombatSoundFXSource.clip = AudioSO.SwordCriticalSlash[random];
+        CombatSoundFXSource.Play();
     }
 
-    public void PlayArcaneStrikeToggle(Transform spawnPosition)
+    public void PlayArcaneStrikeToggle()
     {
-        AudioSource audioSource = Instantiate(SoundFXObject, spawnPosition);
-        audioSource.clip = AudioSO.ArcaneSlashToggle;
-        audioSource.Play();
-        Destroy(audioSource.gameObject, audioSource.clip.length);
+        SkillFXSource.clip = AudioSO.ArcaneSlashToggle;
+        SkillFXSource.Play();
     }
     
-    public void PlayArcaneStrikeImpact(Transform spawnPosition)
+    public void PlayArcaneStrikeImpact()
     {
-        AudioSource audioSource = Instantiate(SoundFXObject, spawnPosition);
-        audioSource.clip = AudioSO.ArcaneSlashImpact;
-        audioSource.Play();
-        Destroy(audioSource.gameObject, audioSource.clip.length);
+        SkillFXSource.clip = AudioSO.ArcaneSlashImpact;
+        SkillFXSource.Play();
     }
     
-    public void PlayFootStep(Transform spawnPosition)
+    public void PlayDivineStrike()
+    { 
+        SkillFXSource.clip = AudioSO.DivineArcane;
+        SkillFXSource.Play();
+    }
+    public void PlayBuff()
+    { 
+        SkillFXSource.clip = AudioSO.BuffSound;
+        SkillFXSource.Play();
+    }
+    public void PlayFootStep()
     {
         int random = Random.Range(0, 3);
         
-        AudioSource audioSource = Instantiate(SoundFXObject, spawnPosition);
-        audioSource.clip = AudioSO.FootStep[random];
-        audioSource.Play();
-        Destroy(audioSource.gameObject, audioSource.clip.length);
+        OtherSoundFXSource.clip = AudioSO.FootStep[random];
+        OtherSoundFXSource.Play();
     }
 
-    public void PlayGetHit(Transform spawnPosition)
+    public void PlayGetHit()
     {
         int random = Random.Range(0, 3);
         
-        AudioSource audioSource = Instantiate(SoundFXObject, spawnPosition);
-        audioSource.clip = AudioSO.GetHit[random];
-        audioSource.Play();
-        Destroy(audioSource.gameObject, audioSource.clip.length);
+        OtherSoundFXSource.clip = AudioSO.GetHit[random];
+        OtherSoundFXSource.Play();
     }
     
-    public void PlayDied(Transform spawnPosition)
+    public void PlayDied()
     {
         int random = Random.Range(0, 2);
         
-        AudioSource audioSource = Instantiate(SoundFXObject, spawnPosition);
-        audioSource.clip = AudioSO.Died[random];
-        audioSource.Play();
-        Destroy(audioSource.gameObject, audioSource.clip.length);
+        OtherSoundFXSource.clip = AudioSO.Died[random];
+        OtherSoundFXSource.Play();
     }
 
-    public void PlayAlert(Transform spawnPosition)
+    public void PlayAlert()
     {
-        AudioSource audioSource = Instantiate(SoundFXObject, spawnPosition);
-        audioSource.clip = AudioSO.AlertAudio;
-        audioSource.Play();
-        Destroy(audioSource.gameObject, audioSource.clip.length);
+        OtherSoundFXSource.clip = AudioSO.AlertAudio;
+        OtherSoundFXSource.Play();
     }
     
-    public void PlayAgro(Transform spawnPosition)
+    public void PlayAgro()
     {
-        AudioSource audioSource = Instantiate(SoundFXObject, spawnPosition);
-        audioSource.clip = AudioSO.AgroAudio;
-        audioSource.Play();
-        Destroy(audioSource.gameObject, audioSource.clip.length);
+        OtherSoundFXSource.clip = AudioSO.AgroAudio;
+        OtherSoundFXSource.Play();
     }
     
     

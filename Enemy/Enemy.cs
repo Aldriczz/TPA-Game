@@ -60,7 +60,7 @@ public class Enemy : MonoBehaviour
         int Dmg;
         if (randomCritChance < Stat.CritChance)
         {
-            AudioManager.Instance.PlaySwordCriticalSlash(transform);
+            AudioManager.Instance.PlaySwordCriticalSlash();
             Dmg = Mathf.RoundToInt((float)((Stat.Damage + RandomFactorDmg) * Stat.CritDamage / 100f) *
                                    (1f - (float)PlayerDefense / (float)(PlayerDefense + DefenseImpact)));
             Player.Instance.GetComponent<Damageable>().TakeDamage(Dmg, Color.red);
@@ -71,10 +71,10 @@ public class Enemy : MonoBehaviour
             switch (Stat.Type)
             {
                 case "Common":
-                    AudioManager.Instance.PlayPunch(transform);
+                    AudioManager.Instance.PlayPunch();
                     break;
                 default:
-                    AudioManager.Instance.PlaySwordSlash(transform);
+                    AudioManager.Instance.PlaySwordSlash();
                     break;
             }
             Dmg = Mathf.RoundToInt((float)(Stat.Damage + RandomFactorDmg) * (1f - (float)PlayerDefense / (float)(PlayerDefense + DefenseImpact)));
@@ -107,11 +107,11 @@ public class Enemy : MonoBehaviour
         else
             animator.SetTrigger("gethit");
         
-        AudioManager.Instance.PlayGetHit(transform);
+        AudioManager.Instance.PlayGetHit();
 
         if (Stat.CurrentHealth <= 0)
         {
-            AudioManager.Instance.PlayDied(transform);
+            AudioManager.Instance.PlayDied();
             
             isAlive = false;
             Destroy(GetComponent<BoxCollider>());

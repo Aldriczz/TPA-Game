@@ -30,7 +30,7 @@ public class EnemyChaseState : EnemyState
         var AgroText = enemy.transform.Find("Canvas/Bar/Agro Text");
         AgroText.gameObject.SetActive(true);
         
-        AudioManager.Instance.PlayAgro(enemy.transform);
+        AudioManager.Instance.PlayAgro();
         var target = (playerStateMachine.transform.position - enemy.transform.position).normalized;
         enemy.transform.forward = target;
     }
@@ -88,7 +88,7 @@ public class EnemyChaseState : EnemyState
     {
         foreach (var targetTile in path)
         {
-            AudioManager.Instance.PlayFootStep(enemy.transform);
+            AudioManager.Instance.PlayFootStep();
             var targetPosition = new Vector3(targetTile.x, 0.75f, targetTile.y);
             while (Vector3.Distance(stateMachine.transform.position, targetPosition) > 0.01f)
             {

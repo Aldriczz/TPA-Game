@@ -8,8 +8,11 @@ public class HPBarController : MonoBehaviour
 {
     public Slider HPBar;
     public Slider EaseHPBar;
+    public Text HPText;
     public IntEventChannel SetupHpBarEvent;
     public IntEventChannel UpdateHpBarEvent;
+
+    private int MaxHP;
     
     private void OnEnable()
     {
@@ -23,17 +26,20 @@ public class HPBarController : MonoBehaviour
         UpdateHpBarEvent.OnRaiseIntEvent -= UpdateUI;
     }
 
-    private void SetupUI(int MaxHp)
+    private void SetupUI(int _MaxHp)
     {
-        HPBar.maxValue = MaxHp;
-        HPBar.value = MaxHp;
-        EaseHPBar.maxValue = MaxHp;
-        EaseHPBar.value = MaxHp;
+        HPBar.maxValue = _MaxHp;
+        HPBar.value = _MaxHp;
+        EaseHPBar.maxValue = _MaxHp;
+        EaseHPBar.value = _MaxHp;
+        HPText.text = $"{_MaxHp} / {_MaxHp}";
+        MaxHP = _MaxHp;
     }
 
     private void UpdateUI(int CurrentHp)
     {
         HPBar.value = CurrentHp;
+        HPText.text = $"{CurrentHp} / {MaxHP}";
     }
 
     private void Update()

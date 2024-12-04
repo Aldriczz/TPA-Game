@@ -8,9 +8,11 @@ public class ExpBarController : MonoBehaviour
 {
     public Slider ExpBar;
     public Slider EaseExpBar;
+    public Text ExpText;
     public IntEventChannel SetupExpBarEvent;
     public IntEventChannel UpdateExpBarEvent;
-    
+
+    private int MaxExp;
     private void OnEnable()
     {
         SetupExpBarEvent.OnRaiseIntEvent += SetupUI;
@@ -23,15 +25,18 @@ public class ExpBarController : MonoBehaviour
         UpdateExpBarEvent.OnRaiseIntEvent -= UpdateUI;
     }
 
-    private void SetupUI(int MaxExp)
+    private void SetupUI(int _MaxExp)
     {
-        ExpBar.maxValue = MaxExp;
-        EaseExpBar.maxValue = MaxExp;
+        MaxExp = _MaxExp;
+        ExpBar.maxValue = _MaxExp;
+        EaseExpBar.maxValue = _MaxExp;
+        ExpText.text = $"{Player.Instance.stats.CurrentExperience}/{_MaxExp}";
     }
 
     private void UpdateUI(int CurrentExp)
     {
         ExpBar.value = CurrentExp;
+        ExpText.text = $"{Player.Instance.stats.CurrentExperience}/{MaxExp}";
     }
 
     private void Update()

@@ -21,7 +21,7 @@ public class EnemyAlertState : EnemyState
         AlertText.gameObject.SetActive(true);
         TurnGameManager.Instance.AlertEnemies.Add(stateMachine);
         
-        AudioManager.Instance.PlayAlert(enemy.transform);
+        AudioManager.Instance.PlayAlert();
     }
 
     public override void HandleInput()

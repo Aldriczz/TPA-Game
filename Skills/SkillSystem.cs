@@ -98,7 +98,7 @@ public class SkillSystem : MonoBehaviour
                 SkillEffectList[(int)AllSkillIndex.ARCANE_STRIKE].SetActive(true);
                 SkillToggleImageList[(int)ActiveSkillIndex.ARCANE_STRIKE].gameObject.SetActive(true);
                 activeSkill.isToggle = true;
-                AudioManager.Instance.PlayArcaneStrikeToggle(Player.Instance.transform);
+                AudioManager.Instance.PlayArcaneStrikeToggle();
             }
             else
             {
@@ -120,6 +120,7 @@ public class SkillSystem : MonoBehaviour
             if (passiveSkill.GetCanBeUsed())
             {
                 Player.Instance.animator.SetTrigger("buff");
+                AudioManager.Instance.PlayBuff();
                 passiveSkill.SetCanBeUsed(false);
                 passiveSkill.ActivateSkill();
                 SkillSlotController.Instance.UpdateCooldownUI();
@@ -138,6 +139,7 @@ public class SkillSystem : MonoBehaviour
             if (passiveSkill.GetCanBeUsed())
             {
                 Player.Instance.animator.SetTrigger("buff");
+                AudioManager.Instance.PlayBuff();
                 passiveSkill.SetCanBeUsed(false);
                 passiveSkill.ActivateSkill();
                 SkillSlotController.Instance.UpdateCooldownUI();

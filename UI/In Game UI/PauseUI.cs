@@ -49,17 +49,13 @@ public class PauseUI : MonoBehaviour
     public void BackToUpgrade()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu");
-        MainMenuUI.SetActive(false);
-        UpgradeMenuUI.SetActive(true);
+        SceneManager.LoadScene("UpgradeMenu");
     }
 
     public void BackToMainMenu()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu");
-        MainMenuUI.SetActive(true);
-        UpgradeMenuUI.SetActive(false);
         SaveDataController.Instance.SaveData();
+        SceneManager.LoadScene("MainMenu");
     }
 }
